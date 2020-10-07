@@ -11,8 +11,8 @@
 * **Functional Requirements**
     + Tectstack
         * Frontend - HTML, CSS and JavaScript.
-        * Backend - PHP Laravel Framework
-        * Relational Database - SQL.
+        * Backend - Flask python framework
+        * Relational Database - Python MySQL connector. 
     + Use cases -
         * Users can create accounts.
         * Users can follow other users.
@@ -21,5 +21,5 @@
         * Users can comment and like the posts on their news feed.
         * Users can also share those posts on their own page.
 
-![](../mini_project/database_design/schema/relational_schema.png)
+![](./database_design/relational_schema.png)
 
