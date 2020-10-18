@@ -1,2 +1,2 @@
-FLASK_APP=flaskr
+FLASK_APP=socialize
 FLASK_ENV=development

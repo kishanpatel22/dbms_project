@@ -13,3 +13,7 @@ build/
 
 .env
 .vscode/
+
+*.un~
+*.txt~
+*.*.un~
