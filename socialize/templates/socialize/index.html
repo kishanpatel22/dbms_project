@@ -12,14 +12,14 @@
     <article class="post">
       <header>
         <div>
-          <h1>{{ post['title'] }}</h1>
-          <div class="about">by {{ post['username'] }} on {{ post['created'].strftime('%Y-%m-%d') }}</div>
+          <h1>{{ post['image_caption'] }}</h1>
+          <div class="about">by {{ post['post_user_id'] }} on {{ post['created'].strftime('%Y-%m-%d') }}</div>
         </div>
-        {% if g.user['id'] == post['author_id'] %}
-          <a class="action" href="{{ url_for('socialize.update', id=post['id']) }}">Edit</a>
+        {% if g.user['user_id'] == post['post_user_id'] %}
+          <a class="action" href="{{ url_for('socialize.update', id=post['post_user_id']) }}">Edit</a>
         {% endif %}
       </header>
-      <p class="body">{{ post['body'] }}</p>
+      <p class="body">{{ post['image_url'] }}</p>
     </article>
     {% if not loop.last %}
       <hr>

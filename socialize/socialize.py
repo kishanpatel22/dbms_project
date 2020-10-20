@@ -17,7 +17,7 @@ bp = Blueprint('socialize', __name__)
 def index():
     db = get_db()
     posts = db.execute(
-        'SELECT * from posts order by timestamp desc limit 10'
+        'SELECT * from posts order by created desc limit 10'
     ).fetchall()
     return render_template('socialize/index.html', posts=posts)
 

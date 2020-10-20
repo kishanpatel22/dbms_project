@@ -38,7 +38,7 @@ def register():
             # inserts into user table
             db.execute(
                 'INSERT INTO user (user_id) VALUES (?)',
-                (user['user_id'])
+                (user['user_id'],)
             )
             db.commit()
             return redirect(url_for('auth.login'))

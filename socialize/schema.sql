@@ -34,7 +34,7 @@ CREATE TABLE posts (
     num_comments INTEGER default 0 check(num_comments >= 0),
     image_url TEXT,
     image_caption TEXT,
-    timestamp TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    created TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (post_user_id, post_id)
     FOREIGN KEY (post_user_id) REFERENCES user (user_id)
 );
@@ -44,7 +44,7 @@ CREATE TABLE connections (
     user_id_follower INTEGER,
     user_id_following INTEGER,
     mutual_connection BOOLEAN default False,
-    timestamp TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    created TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (user_id_follower, user_id_following)
     FOREIGN KEY (user_id_follower) REFERENCES user (user_id),
     FOREIGN KEY (user_id_following) REFERENCES user (user_id)
@@ -56,7 +56,7 @@ CREATE TABLE user_activity (
     post_id INTEGER,
     post_user_id INTEGER,
     type_of_activity INTEGER,
-    timestamp TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    created TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (user_id, post_id, post_user_id, type_of_activity)
     FOREIGN KEY (user_id) REFERENCES user (user_id),
     FOREIGN KEY (post_user_id) REFERENCES post (user_id),
@@ -68,7 +68,7 @@ CREATE TABLE likes (
     user_id INTEGER,
     post_id INTEGER,
     post_user_id INTEGER,
-    timestamp TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    created TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (user_id, post_id, post_user_id),
     FOREIGN KEY (user_id) REFERENCES user (user_id),
     FOREIGN KEY (post_user_id) REFERENCES post (user_id),
@@ -81,7 +81,7 @@ CREATE TABLE comments (
     post_id INTEGER,
     post_user_id INTEGER,
     comment_text TEXT NOT NULL,
-    timestamp TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    created TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (comment_id, user_id, post_id, post_user_id),
     FOREIGN KEY (user_id) REFERENCES user (user_id),
     FOREIGN KEY (post_user_id) REFERENCES post (user_id),
@@ -93,7 +93,7 @@ CREATE TABLE share (
     post_id integer,
     post_user_id INTEGER,
     type_of_activity INTEGER,
-    timestamp TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    created TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (user_id, post_id, post_user_id),
     FOREIGN KEY (user_id) REFERENCES user (user_id),
     FOREIGN KEY (post_user_id) REFERENCES post (user_id),
