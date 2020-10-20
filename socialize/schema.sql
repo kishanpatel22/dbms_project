@@ -1,23 +1,30 @@
 DROP TABLE IF EXISTS user;
-DROP TABLE IF EXISTS post;
-
-CREATE TABLE user (
-    user_id INTEGER PRIMARY KEY AUTOINCREMENT,
-    user_caption TEXT,
-    num_followers INTEGER default 0, check(num_followers >= 0),
-    num_followings INTEGER default 0, check(num_followings >= 0),
-    num_posts INTEGER default 0, check(num_posts >= 0),
-);
+DROP TABLE IF EXISTS user_info;
+DROP TABLE IF EXISTS posts;
+DROP TABLE IF EXISTS connections;
+DROP TABLE IF EXISTS user_activity;
+DROP TABLE IF EXISTS  likes;
+DROP TABLE IF EXISTS comments;
+DROP TABLE IF EXISTS share;
 
 CREATE TABLE user_info (
-    user_id INTEGER PRIMARY KEY,
-    username TEXT,
+    user_id INTEGER PRIMARY KEY AUTOINCREMENT,
+    username TEXT UNIQUE,
     password TEXT,
     data_of_birth TEXT,
     email_id TEXT,
     phone_number INTEGER,
     profile_photo TEXT,
-    FOREIGN KEY (user_id) REFERENCES user (user_id)
+);
+
+
+CREATE TABLE user (
+    user_id INTEGER PRIMARY KEY,
+    user_caption TEXT,
+    num_followers INTEGER default 0, check(num_followers >= 0),
+    num_followings INTEGER default 0, check(num_followings >= 0),
+    num_posts INTEGER default 0, check(num_posts >= 0),
+    FOREIGN KEY (user_id) REFERENCES user_info (user_id)
 );
 
 CREATE TABLE posts (
