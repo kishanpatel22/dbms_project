@@ -62,6 +62,35 @@ def get_post(post_id, post_user_id, check_author=True):
 
     return post
 
+
+# user news feed 
+@bp.route('/<username>')
+def user_feeds():
+    db = get_db()
+    posts = db.execute(
+        'SELECT * from posts where post_user_id in' 
+        '(SELECT user_id_following from connections where user_id_follower in' 
+        '(SELECT user_id from user_info where username = ?))',
+        (username, )
+    ).fetchall()
+    return render_template('socialize/user_feed.html', posts=posts, username=username)
+
+
+# connections 
+@bp.route('/<username>/connections'):
+@login_required
+def connections():
+    db = get_db()
+    peoples = db.execute(
+                    'SELECT * from user_info where user_id not in '
+                    '(SELECT user_id_following from connections where user_id_follower in ' 
+                    '(SELECT user_id from user_info where username = ?))'
+                    (username, )
+              ).fetchall()
+    return render_template('socialize/connections.html')
+
+
+
 """
 @bp.route('/<int:id>/update', methods=('GET', 'POST'))
 @login_required
