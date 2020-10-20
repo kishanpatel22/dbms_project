@@ -14,47 +14,50 @@ CREATE TABLE user_info (
     data_of_birth TEXT,
     email_id TEXT,
     phone_number INTEGER,
-    profile_photo TEXT,
+    profile_photo TEXT
 );
-
 
 CREATE TABLE user (
     user_id INTEGER PRIMARY KEY,
     user_caption TEXT,
-    num_followers INTEGER default 0, check(num_followers >= 0),
-    num_followings INTEGER default 0, check(num_followings >= 0),
-    num_posts INTEGER default 0, check(num_posts >= 0),
+    num_followers INTEGER default 0 check(num_followers >= 0),
+    num_followings INTEGER default 0 check(num_followings >= 0),
+    num_posts INTEGER default 0 check(num_posts >= 0),
     FOREIGN KEY (user_id) REFERENCES user_info (user_id)
 );
 
+/* TODO : autoincrement has problem */
 CREATE TABLE posts (
-    post_user_id INTEGER PRIMARY KEY,
-    post_id INTEGER PRIMARY KEY AUTOINCREMENT,
-    num_likes INTEGER default 0, check(num_likes >= 0),
-    num_comments INTEGER default 0, check(num_comments >= 0),
+    post_user_id INTEGER,
+    post_id INTEGER,
+    num_likes INTEGER default 0 check(num_likes >= 0),
+    num_comments INTEGER default 0 check(num_comments >= 0),
     image_url TEXT,
     image_caption TEXT,
     timestamp TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (post_user_id, post_id)
     FOREIGN KEY (post_user_id) REFERENCES user (user_id)
 );
 
 
 CREATE TABLE connections (
-    user_id_follower INTEGER PRIMARY KEY,
-    user_id_following INTEGER PRIMARY KEY,
+    user_id_follower INTEGER,
+    user_id_following INTEGER,
     mutual_connection BOOLEAN default False,
     timestamp TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (user_id_follower, user_id_following)
     FOREIGN KEY (user_id_follower) REFERENCES user (user_id),
     FOREIGN KEY (user_id_following) REFERENCES user (user_id)
 );
 
 
 CREATE TABLE user_activity (
-    user_id integer primary key,
-    post_id integer primary key,
-    post_user_id INTEGER PRIMARY KEY,
-    type_of_activity INTEGER PRIMARY KEY,
+    user_id INTEGER,
+    post_id INTEGER,
+    post_user_id INTEGER,
+    type_of_activity INTEGER,
     timestamp TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (user_id, post_id, post_user_id, type_of_activity)
     FOREIGN KEY (user_id) REFERENCES user (user_id),
     FOREIGN KEY (post_user_id) REFERENCES post (user_id),
     FOREIGN KEY (post_id) REFERENCES post (posts_id)
@@ -62,37 +65,37 @@ CREATE TABLE user_activity (
 
 
 CREATE TABLE likes (
-    user_id integer primary key,
-    post_id integer primary key,
-    post_user_id INTEGER PRIMARY KEY,
+    user_id INTEGER,
+    post_id INTEGER,
+    post_user_id INTEGER,
     timestamp TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (user_id, post_id, post_user_id),
     FOREIGN KEY (user_id) REFERENCES user (user_id),
     FOREIGN KEY (post_user_id) REFERENCES post (user_id),
     FOREIGN KEY (post_id) REFERENCES post (posts_id)
 );
 
 CREATE TABLE comments (
-    comment_id INTEGER PRIMARY KEY AUTOINCREMENT,
-    user_id integer primary key,
-    post_id integer primary key,
-    post_user_id INTEGER PRIMARY KEY,
+    comment_id INTEGER,
+    user_id INTEGER,
+    post_id INTEGER,
+    post_user_id INTEGER,
     comment_text TEXT NOT NULL,
     timestamp TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (comment_id, user_id, post_id, post_user_id),
     FOREIGN KEY (user_id) REFERENCES user (user_id),
     FOREIGN KEY (post_user_id) REFERENCES post (user_id),
     FOREIGN KEY (post_id) REFERENCES post (posts_id)
 );
 
 CREATE TABLE share (
-    user_id integer primary key,
-    post_id integer primary key,
-    post_user_id INTEGER PRIMARY KEY,
-    type_of_activity INTEGER PRIMARY KEY,
+    user_id integer,
+    post_id integer,
+    post_user_id INTEGER,
+    type_of_activity INTEGER,
     timestamp TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (user_id, post_id, post_user_id),
     FOREIGN KEY (user_id) REFERENCES user (user_id),
     FOREIGN KEY (post_user_id) REFERENCES post (user_id),
     FOREIGN KEY (post_id) REFERENCES post (posts_id)
 );
-
-
-
