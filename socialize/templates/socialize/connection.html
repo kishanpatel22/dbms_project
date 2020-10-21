@@ -1,9 +1,21 @@
 {% extends 'base.html' %}
 
 {% block header %}
-  <h1>{% block title %} User news feed {% endblock %}</h1>
+  <h1>{% block title %}Make new Connections!{% endblock %}</h1>
 {% endblock %}
 
 {% block content %}
-    <h1> Hello wordl </h1>
+  <form method="post">
+    <div class="container">
+      <ul class="list-group">
+        {% for user in users %}
+          <a href="">
+            <li class="list-group-item">{{ user.username }}</li>
+          </a>
+        {% endfor %}
+      </ul>
+      
+      <input type="submit" value="Save">
+    </div>
+  </form>
 {% endblock %}

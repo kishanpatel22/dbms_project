@@ -64,31 +64,31 @@ def get_post(post_id, post_user_id, check_author=True):
 
 
 # user news feed 
-@bp.route('/<username>')
-def user_feeds(username):
+@bp.route('/feed')
+@login_required
+def user_feed():
     db = get_db()
     posts = db.execute(
         'SELECT * from posts where post_user_id in' 
         '(SELECT user_id_following from connections where user_id_follower in' 
         '(SELECT user_id from user_info where username = ?))',
-        (username, )
+        (g.user['username'], )
     ).fetchall()
-    return render_template('socialize/user_feed.html', posts=posts, username=username)
+    return render_template('socialize/user_feed.html', posts=posts)
 
 
 # connections 
-@bp.route('/<username>/connection')
+@bp.route('/connection')
 @login_required
-def connection(username):
+def connection():
     db = get_db()
     peoples = db.execute(
                     'SELECT * from user_info where user_id not in '
                     '(SELECT user_id_following from connections where user_id_follower in ' 
                     '(SELECT user_id from user_info where username = ?))'
-                    (username, )
+                    (g.user['username'],)
               ).fetchall()
     return render_template('socialize/connection.html', users=peoples)
-
 
 
 """
