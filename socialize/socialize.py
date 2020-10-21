@@ -65,7 +65,7 @@ def get_post(post_id, post_user_id, check_author=True):
 
 # user news feed 
 @bp.route('/<username>')
-def user_feeds():
+def user_feeds(username):
     db = get_db()
     posts = db.execute(
         'SELECT * from posts where post_user_id in' 
@@ -77,9 +77,9 @@ def user_feeds():
 
 
 # connections 
-@bp.route('/<username>/connections'):
+@bp.route('/<username>/connections')
 @login_required
-def connections():
+def connections(username):
     db = get_db()
     peoples = db.execute(
                     'SELECT * from user_info where user_id not in '
