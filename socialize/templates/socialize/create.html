@@ -2,6 +2,12 @@
 
 {% block header %}
   <h1>{% block title %}New Post{% endblock %}</h1>
+  {% if g.user %}
+    <a class="action" href="{{ url_for('socialize.create') }}">New</a>
+    <a class="action" href="{{ url_for('socialize.index') }}">Trending</a>
+    <a class="action" href="{{ url_for('socialize.user_feed') }}">Feed</a>
+    <a class="action" href="{{ url_for('socialize.connection') }}">Connections</a>
+  {% endif %}
 {% endblock %}
 
 {% block content %}

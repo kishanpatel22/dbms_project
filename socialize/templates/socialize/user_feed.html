@@ -4,10 +4,25 @@
   <h1>{% block title %}Feed{% endblock %}</h1>
   {% if g.user %}
     <a class="action" href="{{ url_for('socialize.create') }}">New</a>
+    <a class="action" href="{{ url_for('socialize.index') }}">Trending</a>
+    <a class="action" href="{{ url_for('socialize.user_feed') }}">Feed</a>
     <a class="action" href="{{ url_for('socialize.connection') }}">Connections</a>
   {% endif %}
 {% endblock %}
 
 {% block content %}
-  Feed
+  {% for post in posts %}
+    <article class="post">
+      <header>
+        <div>
+          <h1>{{ post['image_caption'] }}</h1>
+          <div class="about">by {{ post['post_user_id'] }} on {{ post['created'].strftime('%Y-%m-%d') }}</div>
+        </div>
+      </header>
+      <img src="{{ post['image_url'] }}" alt="{{ post['post_user_id'] }} image">
+    </article>
+    {% if not loop.last %}
+      <hr>
+    {% endif %}
+  {% endfor %}
 {% endblock %}
