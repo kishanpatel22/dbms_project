@@ -71,8 +71,8 @@ def user_feed():
     posts = db.execute(
         'SELECT * from posts where post_user_id in' 
         '(SELECT user_id_following from connections where user_id_follower in' 
-        '(SELECT user_id from user_info where username = ?))',
-        (g.user['username'], )
+        '(SELECT user_id from user_info where user_id = ?))',
+        (g.user['user_id'], )
     ).fetchall()
     return render_template('socialize/user_feed.html', posts=posts)
 
@@ -85,8 +85,8 @@ def connection():
     peoples = db.execute(
                     'SELECT * from user_info where user_id not in '
                     '(SELECT user_id_following from connections where user_id_follower in ' 
-                    '(SELECT user_id from user_info where username = ?))'
-                    (g.user['username'],)
+                    '(SELECT user_id from user_info where user_id = ?))',
+                    (g.user['user_id'],)
               ).fetchall()
     return render_template('socialize/connection.html', users=peoples)
 
