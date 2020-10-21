@@ -77,9 +77,9 @@ def user_feeds(username):
 
 
 # connections 
-@bp.route('/<username>/connections')
+@bp.route('/<username>/connection')
 @login_required
-def connections(username):
+def connection(username):
     db = get_db()
     peoples = db.execute(
                     'SELECT * from user_info where user_id not in '
@@ -87,7 +87,7 @@ def connections(username):
                     '(SELECT user_id from user_info where username = ?))'
                     (username, )
               ).fetchall()
-    return render_template('socialize/connections.html')
+    return render_template('socialize/connection.html', users=peoples)
 
 
 
