@@ -64,6 +64,13 @@ def get_post(post_id, post_user_id, check_author=True):
 
 
 # user news feed 
+@bp.route('/profile')
+@login_required
+def profile():
+    return render_template('socialize/profile.html')
+
+
+# user news feed 
 @bp.route('/feed')
 @login_required
 def user_feed():
