@@ -6,11 +6,16 @@ from flask import Flask
     along with database connection
 """
 def create_app(test_config=None):
+    BASEDIR = os.path.abspath(os.path.dirname(__file__))
+    
     # create and configure the app
     app = Flask(__name__, instance_relative_config=True)
     app.config.from_mapping(
-        SECRET_KEY='dev',
+        SECRET_KEY=os.environ['SECRET_KEY'],
         DATABASE=os.path.join(app.instance_path, 'socialize.sqlite'),
+        IMAGE_FOLDER=os.path.join(BASEDIR, "static", os.environ['UPLOAD_IMAGE_FOLDER']),
+        THUMBNAIL_FOLDER=os.path.join(BASEDIR, "static", os.environ['THUMBNAIL_FOLDER']),
+        ALLOWED_EXTENSIONS=os.environ['ALLOWED_EXTENSIONS'].split(',')
     )
 
     if test_config is None:

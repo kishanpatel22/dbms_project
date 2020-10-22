@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<main id="main">
+    <!-- Header -->
+    <header id="header">
+        <h1>Socialize</h1>
+        
+        {% if g.user %}
+        <h4>{{ g.user['username'] }}</h4>
+        <ul class="icons">
+            <li>
+            <a href="#"> Feed </a>
+            </li>
+            <li>
+            <a href="#"> Profile </a>
+            </li>
+            <li>
+            <a href="{{ url_for('socialize.create') }}"> Create </a>
+            </li>
+            <li>
+            <a href="{{ url_for('auth.logout') }}"> Logout </a>
+            </li>
+        </ul>
+        {% else %}
+        <ul class="icons">
+            <li>
+            <a href="{{ url_for('auth.login') }}"> Login </a>
+            </li>
+        </ul>
+        {% endif %}
+    </header>
+    
+    <!-- Content -->
+    <section id="thumbnails">
+        {% for post in posts %}
+        <article>
+            <a class="thumbnail" href="{{ post['image_url'] }}" data-position="left center">
+            <img
+                src="{{ url_for('static', filename=post['image_url']) }}"
+                alt="{{ post['image_caption'] }}"
+            />
+            </a>
+            <h2>by {{ post['post_user_id'] }} on {{ post['created'].strftime('%Y-%m-%d') }}</h2>
+            <p>{{ post['image_caption'] }}</p>
+        </article>
+        {% endfor %}
+        <article>
+            <a class="thumbnail" href="{{ url_for('static', filename='images/01.jpg') }}" data-position="left center">
+            <img
+                src="{{ url_for('static', filename='images/01.jpg') }}"
+                alt="This is a caption"
+            />
+            </a>
+            <h2>by me on today</h2>
+            <p>This is a caption</p>
+        </article>
+    </section>
+</main>
+
+<!-- Scripts -->
+<script src="{{ url_for('static', filename='js/jquery.min.js') }}"></script>
+<script src="{{ url_for('static', filename='js/browser.min.js') }}"></script>
+<script src="{{ url_for('static', filename='js/breakpoints.min.js') }}"></script>
+<script src="{{ url_for('static', filename='js/main.js') }}"></script>
+{% endblock content %}

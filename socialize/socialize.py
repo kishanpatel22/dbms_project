@@ -1,7 +1,10 @@
+import os
+
 from flask import (
-    Blueprint, flash, g, redirect, render_template, request, url_for
+    Blueprint, flash, g, redirect, render_template, request, url_for, current_app
 )
 from werkzeug.exceptions import abort
+from werkzeug.utils import secure_filename
 
 from socialize.auth import login_required
 from socialize.db import get_db
@@ -19,28 +22,55 @@ def index():
     posts = db.execute(
         'SELECT * from posts order by created desc limit 10'
     ).fetchall()
-    return render_template('socialize/index.html', posts=posts)
+    return render_template('socialize/feed.html', posts=posts)
 
+def allowed_file(filename):
+    return '.' in filename and \
+            filename.rsplit('.', 1)[1].lower() in current_app.config['ALLOWED_EXTENSIONS']
 
 @bp.route('/create', methods=('GET', 'POST'))
 @login_required
 def create():
     if request.method == 'POST':
-        title = request.form['image_caption']
-        body = request.form['image_url']
-        error = None
+        caption = request.form['image_caption']
+        if not caption:
+            flash('Caption is required.')
+        
+        # check if POST object has a file
+        elif 'file' not in request.files:
+            flash('No file part')
 
-        if not title:
-            error = 'Title is required.'
-
-        if error is not None:
-            flash(error)
+        # accept only if file has a name
+        elif request.files['file'].filename == '':
+            flash('No selected file')
+        
         else:
             db = get_db()
+
+            user_id = g.user['user_id']
+            num_post = db.execute(
+                """
+                SELECT num_posts
+                FROM user
+                WHERE user_id = ?
+                """,
+                (user_id,)
+            ).fetchone()['num_posts']
+            image_url = f"{user_id}_{num_post+1}"
+
+            file = request.files['file']
+            if file and allowed_file(file.filename):
+                extension = file.filename.rsplit('.', 1)[1].lower()
+                # sanitize the filename
+                filename = secure_filename(image_url) + '.' + extension
+                file.save(os.path.join(current_app.config['IMAGE_FOLDER'], filename))
+
             db.execute(
-                'INSERT INTO posts (image_caption, image_url, post_user_id)'
-                ' VALUES (?, ?, ?)',
-                (title, body, g.user['user_id'])
+                """
+                INSERT INTO posts (image_caption, image_url, post_user_id)
+                VALUES (?, ?, ?)
+                """,
+                (caption, image_url, user_id)
             )
             db.commit()
             return redirect(url_for('socialize.index'))
@@ -81,7 +111,7 @@ def user_feed():
         '(SELECT user_id from user_info where user_id = ?))',
         (g.user['user_id'], )
     ).fetchall()
-    return render_template('socialize/user_feed.html', posts=posts)
+    return render_template('socialize/feed.html', posts=posts)
 
 
 # connections 

@@ -1,8 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Socialize</title>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, user-scalable=no"
+    />
 
     <link
       href="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css"
@@ -12,33 +16,16 @@
     <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
-
-    <title>Socialize</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}" />
+    
+    <noscript><link rel="stylesheet" href="{{ url_for('static', filename='css/noscript.css') }}" /></noscript>
   </head>
 
   <body>
-    <!-- default nav bar for all the pages -->
-    <nav>
-      <h1>socialize</h1>
-      <ul>
-        {% if g.user %}
-        <li><a href="{{ url_for('socialize.profile') }}">{{ g.user['username'] }}</a></li>
-        <li><a href="{{ url_for('auth.logout') }}">Log Out</a> {% else %}</li>
-
-        <li><a href="{{ url_for('auth.register') }}">Register</a></li>
-        <li>
-          <a href="{{ url_for('auth.login') }}">Log In</a>
-          {% endif %}
-        </li>
-      </ul>
-    </nav>
-
-    <section class="content">
-      <header>{% block header %}{% endblock %}</header>
-      {% for message in get_flashed_messages() %}
-      <div class="flash">{{ message }}</div>
-      {% endfor %} {% block content %}{% endblock %}
-    </section>
+    {% block content %}{% endblock %}
+    
+    {% for message in get_flashed_messages() %}
+    <div class="flash">{{ message }}</div>
+    {% endfor %}
   </body>
 </html>
