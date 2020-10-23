@@ -45,9 +45,9 @@
         </article>
         {% for post in posts %}
         <article>
-            <a class="thumbnail" href="{{ url_for('static', filename='images/') }}{{ post['image_url'] }}.jpg" data-position="left center">
+            <a class="thumbnail" href="{{ url_for('static', filename='images/') }}{{ post['image_url'] }}" data-position="left center">
             <img
-                src="{{ url_for('static', filename='images/') }}{{ post['image_url'] }}.jpg"
+                src="{{ url_for('static', filename='images/') }}{{ post['image_url'] }}"
                 alt="{{ post['image_caption'] }}"
             />
             </a>

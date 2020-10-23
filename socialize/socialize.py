@@ -62,8 +62,8 @@ def create():
             if file and allowed_file(file.filename):
                 extension = file.filename.rsplit('.', 1)[1].lower()
                 # sanitize the filename
-                filename = secure_filename(image_url) + '.' + extension
-                file.save(os.path.join(current_app.config['IMAGE_FOLDER'], filename))
+                image_url = secure_filename(image_url) + '.' + extension
+                file.save(os.path.join(current_app.config['IMAGE_FOLDER'], image_url))
 
             db.execute(
                 """
