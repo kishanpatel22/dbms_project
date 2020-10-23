@@ -115,8 +115,7 @@ def user_feed():
     db = get_db()
     posts = db.execute(
         'SELECT * from posts where post_user_id in' 
-        '(SELECT user_id_following from connections where user_id_follower in' 
-        '(SELECT user_id from user_info where user_id = ?))',
+        '(SELECT user_id_following from connections where user_id_follower = ?)',
         (g.user['user_id'], )
     ).fetchall()
     return render_template('socialize/feed.html', posts=posts)
@@ -152,7 +151,7 @@ def user_connection():
     user_friends = db.execute(
             'SELECT * from user_info where user_id in '
             '(SELECT user_id_following from connections where user_id_follower = ?)', 
-            (g.user['user_id'], ))
+            (g.user['user_id'], )).fetchall()
     return render_template('socialize/user_connection.html', user_friends=user_friends)
 
 
@@ -177,9 +176,28 @@ def like(post_id, post_user_id, action):
 def comment(post_id, post_user_id):
     db = get_db()
     if request.method == 'POST':
-        return 'To be implementd'
-    else:
-        return 'Hello world'
+        user_comments = db.execute(
+                        'SELECT * from comments where '
+                        'post_id = ? and post_user_id = ? and user_id = ?',
+                        (post_id, post_user_id, g.user['user_id'])).fetchall()
+        num_user_comments = len(user_comments)
+        
+        comment_text = request.form['comment'] 
+        db.execute('INSERT INTO comments (comment_id, user_id, post_id, '
+                    'post_user_id, comment_text) VALUES (?, ?, ?, ?, ?) ',
+                   (num_user_comments + 1, g.user['user_id'], post_id, post_user_id, comment_text))
+        db.commit()
+
+    # get request to the comments
+    comments = db.execute(
+            'SELECT * from comments where post_id = ? and post_user_id = ? '
+            'ORDER BY created DESC',
+            (post_id, post_user_id))
+
+    return render_template('socialize/comment.html', comments=comments,
+                            post_id=post_id, post_user_id=post_user_id) 
+
+
 
 
 """
