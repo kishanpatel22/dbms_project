@@ -37,28 +37,6 @@
     <!-- Content -->
     <section id="thumbnails">
         {% for post in posts %}
-            <article>
-                <a class="thumbnail" href="{{ post['image_url'] }}" data-position="left center">
-                <img
-                    src="{{ url_for('static', filename=post['image_url']) }}"
-                    alt="{{ post['image_caption'] }}"
-                />
-                </a>
-                <h2>by {{ post['post_user_id'] }} on {{ post['created'].strftime('%Y-%m-%d') }}</h2>
-                <p>{{ post['image_caption'] }}</p>
-            </article>
-        {% endfor %}
-        <article>
-            <a class="thumbnail" href="{{ url_for('static', filename='images/01.jpg') }}" data-position="left center">
-            <img
-                src="{{ url_for('static', filename='images/01.jpg') }}"
-                alt="This is a caption"
-            />
-            </a>
-            <h2>by me on today</h2>
-            <p>This is a caption</p>
-        </article>
-        {% for post in posts %}
         <article>
             <a class="thumbnail" href="{{ url_for('static', filename='images/') }}{{ post['image_url'] }}" data-position="left center">
             <img
