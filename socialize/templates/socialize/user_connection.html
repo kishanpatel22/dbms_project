@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<h1> User Connections {{ g.user['username'] }}</h1>
+
+<ul class="icons">
+    <li> 
+        <a class="action" href="{{ url_for('socialize.connection') }}">Find Connections</a>
+    </li>
+    <li>
+        <a class="action" href="{{ url_for('socialize.user_feed') }}">User Feed </a>
+    </li>
+</ul>
+
+<div class="container">
+    <ul>
+    {% for user_friend in user_friends %}
+        <li class="list-group-item">{{ user_friend.username }}</li>
+    {% endfor %}
+    </ul>
+</div>
+
+{% endblock %}
