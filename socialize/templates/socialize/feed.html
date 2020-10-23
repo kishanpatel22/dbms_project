@@ -46,6 +46,15 @@
             </a>
             <h2>by {{ post['post_user_id'] }} on {{ post['created'].strftime('%Y-%m-%d') }}</h2>
             <p>{{ post['image_caption'] }}</p>
+
+            <ul class="icons">
+                <li>
+                    <a href="{{ url_for('socialize.comment') }}/
+                             {{ post['post_id'] }}/
+                             {{ post['post_user_id'] }}"> Comment </a>
+                </li>
+            </ul>
+
         </article>
         {% endfor %}
     </section>

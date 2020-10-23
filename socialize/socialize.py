@@ -157,6 +157,16 @@ def user_connection():
 
 
 
+# comment 
+@bp.route('/comment/<int:post_id>/<int:post_user_id>',  methods=('GET', 'POST'))
+@login_required
+def comment(post_id, post_user_id):
+    db = get_db()
+    if request.method == 'POST':
+        return 'To be implementd'
+    else:
+        return 'Hello world'
+
 
 """
 @bp.route('/<int:id>/update', methods=('GET', 'POST'))

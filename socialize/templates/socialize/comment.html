@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<h1>Posts has the following comments</h1>
+
+<div class="container">
+    {% for comment in comments %}
+        <h2>{{ comment['user_id'] }} commented on 
+            {{ post['created'].strftime('%Y-%m-%d') }} </h2>
+        <p> 
+            {{ comment['comment_text']}}
+        </p>
+    {% endfor %}
+    <form method="post" action="#">
+        <label for="comment">Want to comment</label>
+        <input type="text" id="comment" name="comment"><br>
+        <input type="submit" value="Comment">
+    </form>
+</div>
+
+{% endblock %}
