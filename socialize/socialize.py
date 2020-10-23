@@ -67,10 +67,10 @@ def create():
 
             db.execute(
                 """
-                INSERT INTO posts (image_caption, image_url, post_user_id)
-                VALUES (?, ?, ?)
+                INSERT INTO posts (image_caption, image_url, post_user_id, post_id)
+                VALUES (?, ?, ?, ?)
                 """,
-                (caption, image_url, user_id)
+                (caption, image_url, user_id, num_post + 1)
             )
             db.execute(
                 """

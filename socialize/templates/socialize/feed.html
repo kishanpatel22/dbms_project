@@ -46,9 +46,7 @@
 
             <ul class="icons">
                 <li>
-                    <a href="{{ url_for('socialize.comment') }}/
-                             {{ post['post_id'] }}/
-                             {{ post['post_user_id'] }}"> Comment </a>
+                    <a href="/comment/{{ post['post_id'] }}/{{ post['post_user_id'] }}"> Comment </a>
                 </li>
             </ul>
 
