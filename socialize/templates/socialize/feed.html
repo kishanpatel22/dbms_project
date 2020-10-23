@@ -46,7 +46,26 @@
 
             <ul class="icons">
                 <li>
-                    <a href="/comment/{{ post['post_id'] }}/{{ post['post_user_id'] }}"> Comment </a>
+                    <button
+                      onclick="sendlike('{{ post['post_id'] }}/{{ post['post_user_id'] }}')"
+                    >
+                      <i class="fas fa-heart"></i>
+                    </button>
+                    <!-- <a 
+                      href="/like/{{ post['post_id'] }}/{{ post['post_user_id'] }}/like"
+                    >
+                        <i class="fas fa-comment"></i>
+                    </a> -->
+                </li>
+                <li>
+                    <a href="/comment/{{ post['post_id'] }}/{{ post['post_user_id'] }}">
+                        <i class="fas fa-comment"></i>
+                    </a>
+                </li>
+                <li>
+                    <a href="/comment/{{ post['post_id'] }}/{{ post['post_user_id'] }}">
+                        <i class="fas fa-share"></i>
+                    </a>
                 </li>
             </ul>
 
@@ -60,4 +79,17 @@
 <script src="{{ url_for('static', filename='js/browser.min.js') }}"></script>
 <script src="{{ url_for('static', filename='js/breakpoints.min.js') }}"></script>
 <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+
+<script>
+function sendlike(semi_url) {
+    var xhttp = new XMLHttpRequest();
+    xhttp.onreadystatechange = function() {
+        if (this.readyState == 4 && this.status == 200) {
+            document.getElementById("demo").innerHTML = this.responseText;
+        }
+    };
+    xhttp.open("GET", `/like/${semi_url}/like`, true);
+    xhttp.send();
+}
+</script>
 {% endblock content %}

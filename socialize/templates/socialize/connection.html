@@ -1,27 +1,31 @@
-{% extends 'base.html' %}
-
-{% block content %}
+{% extends 'base.html' %} {% block content %}
 
 <h1>Make new Connections!</h1>
 
 <ul class="icons">
-    <li> 
-        <a class="action" href="{{ url_for('socialize.user_connection') }}">Your Connections</a>
-    </li>
-    <li>
-        <a class="action" href="{{ url_for('socialize.user_feed') }}">User Feed </a>
-    </li>
+  <li>
+    <a class="action" href="{{ url_for('socialize.user_connection') }}">
+      Your Connections
+    </a>
+  </li>
+  <li>
+    <a class="action" href="{{ url_for('socialize.user_feed') }}">User Feed</a>
+  </li>
 </ul>
 
 <div class="container">
-    {% for user in users %}
-        <form method="post" action={{ url_for('socialize.connection')}}>
-            <input type="hidden" id="new_user_id" name="new_user_id" 
-            value="{{ user['user_id']}}">
-            <li class="list-group-item">{{ user.username }}</li>
-            <input type="submit" value="Connect">
-        </form>
-    {% endfor %}
+  {% for user in users %}
+  <form method="post" action="{{ url_for('socialize.connection') }}">
+    <input
+      type="hidden"
+      id="new_user_id"
+      name="new_user_id"
+      value="{{ user['user_id']}}"
+    />
+    <li class="list-group-item">{{ user.username }}</li>
+    <input type="submit" value="Connect" />
+  </form>
+  {% endfor %}
 </div>
 
 {% endblock %}
