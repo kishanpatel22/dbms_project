@@ -2,6 +2,7 @@
 __pycache__/
 
 instance/
+socialize/static/images/
 
 .pytest_cache/
 .coverage

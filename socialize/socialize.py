@@ -72,6 +72,14 @@ def create():
                 """,
                 (caption, image_url, user_id)
             )
+            db.execute(
+                """
+                UPDATE user
+                SET num_posts = num_posts+1
+                WHERE user_id = ?
+                """,
+                (user_id,)
+            )
             db.commit()
             return redirect(url_for('socialize.index'))
 
