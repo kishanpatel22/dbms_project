@@ -1,29 +1,27 @@
 {% extends 'base.html' %}
 
-{% block header %}
-  <h1>{% block title %}Make new Connections!{% endblock %}</h1>
-  {% if g.user %}
-    <a class="action" href="{{ url_for('socialize.create') }}">New</a>
-    <a class="action" href="{{ url_for('socialize.index') }}">Trending</a>
-    <a class="action" href="{{ url_for('socialize.user_feed') }}">Feed</a>
-    <a class="action" href="{{ url_for('socialize.connection') }}">Connections</a>
-  {% endif %}
-{% endblock %}
-
 {% block content %}
-  <form method="post">
-    <div class="container">
-      <ul class="list-group">
-        {% for user in users %}
-          {% if user.username != g.user['username'] %}
-          <a href="">
+
+<h1>Make new Connections!</h1>
+
+<ul class="icons">
+    <li> 
+        <a class="action" href="{{ url_for('socialize.user_connection') }}">Your Connections</a>
+    </li>
+    <li>
+        <a class="action" href="{{ url_for('socialize.user_feed') }}">User Feed </a>
+    </li>
+</ul>
+
+<div class="container">
+    {% for user in users %}
+        <form method="post" action={{ url_for('socialize.connection')}}>
+            <input type="hidden" id="new_user_id" name="new_user_id" 
+            value="{{ user['user_id']}}">
             <li class="list-group-item">{{ user.username }}</li>
-          </a>
-          {% endif %}
-        {% endfor %}
-      </ul>
-      
-      <input type="submit" value="Save">
-    </div>
-  </form>
+            <input type="submit" value="Connect">
+        </form>
+    {% endfor %}
+</div>
+
 {% endblock %}

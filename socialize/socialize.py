@@ -123,17 +123,39 @@ def user_feed():
 
 
 # connections 
-@bp.route('/connection')
+@bp.route('/connection', methods=('GET', 'POST'))
 @login_required
 def connection():
     db = get_db()
-    peoples = db.execute(
-                    'SELECT * from user_info where user_id not in '
-                    '(SELECT user_id_following from connections where user_id_follower in ' 
-                    '(SELECT user_id from user_info where user_id = ?))',
-                    (g.user['user_id'],)
-              ).fetchall()
-    return render_template('socialize/connection.html', users=peoples)
+    if request.method == 'POST':
+        connection_user_id = request.form['new_user_id']
+        db.execute('INSERT INTO connections (user_id_follower, user_id_following)'
+                   'VALUES (?, ?) ',
+                   (g.user['user_id'], connection_user_id))
+        db.commit()
+        return redirect(url_for('socialize.connection'))
+    else:     
+        peoples = db.execute(
+                'SELECT * from user_info where user_id not in '
+                '(SELECT user_id_following from connections where user_id_follower = ?)' 
+                'and user_id != ?',
+                (g.user['user_id'], g.user['user_id'])
+                ).fetchall()
+        return render_template('socialize/connection.html', users=peoples)
+
+
+# user connections 
+@bp.route('/user_connection')
+@login_required
+def user_connection():
+    db = get_db()
+    user_friends = db.execute(
+            'SELECT * from user_info where user_id in '
+            '(SELECT user_id_following from connections where user_id_follower = ?)', 
+            (g.user['user_id'], ))
+    return render_template('socialize/user_connection.html', user_friends=user_friends)
+
+
 
 
 """
