@@ -114,18 +114,22 @@ def profile():
 @login_required
 def user_feed():
     db = get_db()
+    
     posts = db.execute(
-        """
-        SELECT *
-        FROM posts, user_info
-        WHERE post_user_id IN (
-            SELECT user_id_following
-            FROM connections
-            WHERE user_id_follower = ?
-        )
-        """,
-        (g.user['user_id'], )
+        'SELECT allposts.*, user_like.created from '
+        '(SELECT * from '
+        '(SELECT * from posts where post_user_id in' 
+        ' (SELECT user_id_following from connections where user_id_follower = ?)'
+        ' UNION '
+        ' SELECT * from posts where post_user_id = ?)'
+        'ORDER by created DESC) as allposts '
+        'left join likes as user_like on '
+        'user_like.post_id = allposts.post_id and '
+        'user_like.post_user_id = allposts.post_user_id and '  
+        'user_like.user_id = ? ',
+        (g.user['user_id'], g.user['user_id'], g.user['user_id'])
     ).fetchall()
+    
     return render_template('socialize/feed.html', posts=posts)
 
 
@@ -173,18 +177,7 @@ def like(post_id, post_user_id):
         (g.user['user_id'], post_id, post_user_id)
     )
     db.commit()
-    # elif action == 'unlike':
-        # db = get_db()
-        # db.execute(
-        #     """
-        #     INSERT INTO likes (user_id, post_id, post_user_id)
-        #     VALUES (?, ?, ?)
-        #     """,
-        #     (g.user['user_id'], post_id, post_user_id)
-        # )
-        # db.commit()
-
-    return ""
+    return redirect(url_for('socialize.user_feed'))
 
 
 @bp.route('/share/<image_url>/<caption>')
@@ -224,8 +217,8 @@ def share(image_url, caption):
         (user_id,)
     )
     db.commit()
+    return redirect(url_for('socialize.user_feed'))
 
-    return ""
 
 
 # comment 

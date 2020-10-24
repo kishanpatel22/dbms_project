@@ -49,15 +49,26 @@
             </a>
             <h2>by {{ post['post_user_id'] }} on {{ post['created'].strftime('%Y-%m-%d') }}</h2>
             <p>{{ post['image_caption'] }}</p>
+            
+            {% for x in post : %}
+                <h1>{{ x }}</h1>
+            {% endfor %}
 
             <ul class="icons">
                 <li>
-                    <button
-                      onclick="like('{{ post['post_id'] }}/{{ post['post_user_id'] }}')"
-                    >
-                      <!-- onclick=`like("{{ url_for('socialize.like', post_id=post['post_id'], post_user_id=post['post_user_id'], action='like') }}")` -->
-                      <i class="fas fa-heart"></i>
-                    </button>
+                    {% if post[-1] != None : %}
+                        <button style="color : green;" onclick="
+                                like('{{ post['post_id'] }}/{{ post['post_user_id'] }}')">
+                          <!-- onclick=`like("{{ url_for('socialize.like', post_id=post['post_id'], post_user_id=post['post_user_id'], action='like') }}")` -->
+                            <i class="fas fa-heart"></i>
+                        </button>
+                    {% else %}
+                        <button onclick="
+                                like('{{ post['post_id'] }}/{{ post['post_user_id'] }}')">
+                          <!-- onclick=`like("{{ url_for('socialize.like', post_id=post['post_id'], post_user_id=post['post_user_id'], action='like') }}")` -->
+                            <i class="fas fa-heart"></i>
+                        </button>
+                    {% endif %}
                 </li>
                 <li>
                     <a href="/comment/{{ post['post_id'] }}/{{ post['post_user_id'] }}">
