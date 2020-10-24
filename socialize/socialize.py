@@ -161,10 +161,8 @@ def like(post_id, post_user_id, action):
     if action == 'like':
         db = get_db()
         db.execute(
-            """
-            INSERT INTO likes (user_id, post_id, post_user_id)
-            VALUES (?, ?, ?)
-            """,
+            ' INSERT INTO likes (user_id, post_id, post_user_id)'
+            ' VALUES (?, ?, ?)',
             (g.user['user_id'], post_id, post_user_id)
         )
         db.commit()
