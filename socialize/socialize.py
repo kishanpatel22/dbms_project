@@ -1,4 +1,5 @@
 import os
+from shutil import copyfile
 
 from flask import (
     Blueprint, flash, g, redirect, render_template, request, url_for, current_app
@@ -114,8 +115,15 @@ def profile():
 def user_feed():
     db = get_db()
     posts = db.execute(
-        'SELECT * from posts where post_user_id in' 
-        '(SELECT user_id_following from connections where user_id_follower = ?)',
+        """
+        SELECT *
+        FROM posts, user_info
+        WHERE post_user_id IN (
+            SELECT user_id_following
+            FROM connections
+            WHERE user_id_follower = ?
+        )
+        """,
         (g.user['user_id'], )
     ).fetchall()
     return render_template('socialize/feed.html', posts=posts)
@@ -155,17 +163,69 @@ def user_connection():
     return render_template('socialize/user_connection.html', user_friends=user_friends)
 
 
-@bp.route('/like/<int:post_id>/<int:post_user_id>/<action>')
+@bp.route('/like/<int:post_id>/<int:post_user_id>')
 @login_required
-def like(post_id, post_user_id, action):
-    if action == 'like':
-        db = get_db()
-        db.execute(
-            ' INSERT INTO likes (user_id, post_id, post_user_id)'
-            ' VALUES (?, ?, ?)',
-            (g.user['user_id'], post_id, post_user_id)
-        )
-        db.commit()
+def like(post_id, post_user_id):
+    db = get_db()
+    db.execute(
+        ' INSERT INTO likes (user_id, post_id, post_user_id)'
+        ' VALUES (?, ?, ?)',
+        (g.user['user_id'], post_id, post_user_id)
+    )
+    db.commit()
+    # elif action == 'unlike':
+        # db = get_db()
+        # db.execute(
+        #     """
+        #     INSERT INTO likes (user_id, post_id, post_user_id)
+        #     VALUES (?, ?, ?)
+        #     """,
+        #     (g.user['user_id'], post_id, post_user_id)
+        # )
+        # db.commit()
+
+    return ""
+
+
+@bp.route('/share/<image_url>/<caption>')
+@login_required
+def share(image_url, caption):
+    db = get_db()
+    user_id = g.user['user_id']
+
+    num_post = db.execute(
+        """
+        SELECT num_posts
+        FROM user
+        WHERE user_id = ?
+        """,
+        (user_id,)
+    ).fetchone()['num_posts']
+    share_image_url = f"{user_id}_{num_post+1}." + image_url.rsplit(".")[-1]
+
+    # file.save(os.path.join(current_app.config['IMAGE_FOLDER'], image_url))
+    src = f"{current_app.config['IMAGE_FOLDER']}/{image_url}"
+    dst = f"{current_app.config['IMAGE_FOLDER']}/{share_image_url}"
+    copyfile(src, dst)
+
+    db.execute(
+        """
+        INSERT INTO posts (image_caption, image_url, post_user_id, post_id)
+        VALUES (?, ?, ?, ?)
+        """,
+        (caption, share_image_url, user_id, num_post + 1)
+    )
+    db.execute(
+        """
+        UPDATE user
+        SET num_posts = num_posts+1
+        WHERE user_id = ?
+        """,
+        (user_id,)
+    )
+    db.commit()
+
+    return ""
 
 
 # comment 

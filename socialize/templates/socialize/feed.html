@@ -9,9 +9,15 @@
         {% if g.user %}
         <h4><a href="{{ url_for('socialize.profile')}}"> {{ g.user['username'] }} </a></h4>
         <ul class="icons">
+            {% if request.endpoint == url_for('socialize.index') %}
             <li>
                 <a href="{{ url_for('socialize.user_feed')}}"> Feed </a>
             </li>
+            {% else %}
+            <li>
+                <a href="{{ url_for('socialize.index')}}"> Trending </a>
+            </li>
+            {% endif %}
             <li>
                 <a href="{{ url_for('socialize.create') }}"> Create </a>
             </li>
@@ -47,25 +53,24 @@
             <ul class="icons">
                 <li>
                     <button
-                      onclick="sendlike('{{ post['post_id'] }}/{{ post['post_user_id'] }}')"
+                      onclick="like('{{ post['post_id'] }}/{{ post['post_user_id'] }}')"
                     >
+                      <!-- onclick=`like("{{ url_for('socialize.like', post_id=post['post_id'], post_user_id=post['post_user_id'], action='like') }}")` -->
                       <i class="fas fa-heart"></i>
                     </button>
-                    <!-- <a 
-                      href="/like/{{ post['post_id'] }}/{{ post['post_user_id'] }}/like"
+                </li>
+                <li>
+                    <a href="/comment/{{ post['post_id'] }}/{{ post['post_user_id'] }}">
+                        <i class="fas fa-comment"></i>
+                    </a>
+                </li>
+                <li>
+                    <button
+                      onclick="share('{{ post['image_url']|safe }}/{{ post['image_caption']|safe }}')"
                     >
-                        <i class="fas fa-comment"></i>
-                    </a> -->
-                </li>
-                <li>
-                    <a href="/comment/{{ post['post_id'] }}/{{ post['post_user_id'] }}">
-                        <i class="fas fa-comment"></i>
-                    </a>
-                </li>
-                <li>
-                    <a href="/comment/{{ post['post_id'] }}/{{ post['post_user_id'] }}">
-                        <i class="fas fa-share"></i>
-                    </a>
+                      <!-- onclick=`share("{{ url_for('socialize.share', image_url=post['image_url'], caption=post['image_caption']) }}")` -->
+                      <i class="fas fa-share"></i>
+                    </button>
                 </li>
             </ul>
 
@@ -81,14 +86,26 @@
 <script src="{{ url_for('static', filename='js/main.js') }}"></script>
 
 <script>
-function sendlike(semi_url) {
+function like(like_url) {
     var xhttp = new XMLHttpRequest();
-    xhttp.onreadystatechange = function() {
+    /* xhttp.onreadystatechange = function() {
         if (this.readyState == 4 && this.status == 200) {
             document.getElementById("demo").innerHTML = this.responseText;
         }
-    };
-    xhttp.open("GET", `/like/${semi_url}/like`, true);
+    }; */
+    console.log(like_url)
+    xhttp.open("GET", `/like/${like_url}`, true);
+    xhttp.send();
+}
+function share(share_url) {
+    var xhttp = new XMLHttpRequest();
+    /* xhttp.onreadystatechange = function() {
+        if (this.readyState == 4 && this.status == 200) {
+            document.getElementById("demo").innerHTML = this.responseText;
+        }
+    }; */
+    console.log(share_url)
+    xhttp.open("GET", `/share/${share_url}`, true);
     xhttp.send();
 }
 </script>

@@ -99,3 +99,12 @@ CREATE TABLE share (
     FOREIGN KEY (post_user_id) REFERENCES post (user_id),
     FOREIGN KEY (post_id) REFERENCES post (posts_id)
 );
+
+-- For debugging purposes
+INSERT INTO user_info (username, password) VALUES ("admin", "admin");
+INSERT INTO user_info (username, password) VALUES ("test", "test");
+INSERT INTO user_info (username, password) VALUES ("user", "user");
+
+INSERT INTO user (user_id) VALUES (1);
+INSERT INTO user (user_id) VALUES (2);
+INSERT INTO user (user_id) VALUES (3);
