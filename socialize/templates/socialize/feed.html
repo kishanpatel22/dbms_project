@@ -9,7 +9,7 @@
         {% if g.user %}
         <h4><a href="{{ url_for('socialize.profile')}}"> {{ g.user['username'] }} </a></h4>
         <ul class="icons">
-            {% if request.endpoint == url_for('socialize.index') %}
+            {% if url_for(request.endpoint) == url_for('socialize.index') %}
             <li>
                 <a href="{{ url_for('socialize.user_feed')}}"> Feed </a>
             </li>
