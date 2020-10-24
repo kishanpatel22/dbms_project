@@ -107,6 +107,7 @@ function like(like_url) {
     console.log(like_url)
     xhttp.open("GET", `/like/${like_url}`, true);
     xhttp.send();
+    window.location.reload()
 }
 function share(share_url) {
     var xhttp = new XMLHttpRequest();
@@ -118,6 +119,7 @@ function share(share_url) {
     console.log(share_url)
     xhttp.open("GET", `/share/${share_url}`, true);
     xhttp.send();
+    window.location.reload()
 }
 </script>
 {% endblock content %}
