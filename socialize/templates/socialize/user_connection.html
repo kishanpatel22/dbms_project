@@ -2,16 +2,15 @@
 
 {% block content %}
 
-<h1> User Connections {{ g.user['username'] }}</h1>
 
-<ul class="icons">
-    <li> 
-        <a class="action" href="{{ url_for('socialize.connection') }}">Find Connections</a>
-    </li>
-    <li>
-        <a class="action" href="{{ url_for('socialize.user_feed') }}">User Feed </a>
-    </li>
-</ul>
+<div class="container">
+  <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <a class="navbar-brand" href="{{ url_for('socialize.user_feed') }}">Feed</a>
+    <a class="navbar-brand" href="{{ url_for('socialize.connection') }}">Follow</a>
+    <a class="navbar-brand" href="{{ url_for('auth.logout') }}">Logout</a>
+  </nav>
+</div>
+<br />
 
 <div class="container">
     <ul>

@@ -1,22 +1,42 @@
 {% extends 'base.html' %}
 
-{% block header %}
-  <h1>{% block title %}New Post{% endblock %}</h1>
-  {% if g.user %}
-    <a class="action" href="{{ url_for('socialize.create') }}">New</a>
-    <a class="action" href="{{ url_for('socialize.index') }}">Trending</a>
-    <a class="action" href="{{ url_for('socialize.user_feed') }}">Feed</a>
-    <a class="action" href="{{ url_for('socialize.connection') }}">Connections</a>
-  {% endif %}
-{% endblock %}
-
 {% block content %}
-  <form method="post" enctype="multipart/form-data">
-    <label for="image_caption">Caption</label>
-    <input name="image_caption" id="image_caption" value="{{ request.form['image_caption'] }}" required>
-    <!-- <label for="image_url">Image</label>
-    <textarea name="image_url" id="image_url">{{ request.form['image_url'] }}</textarea> -->
-    <input type="file" name="file" accept=".jpg, .jpeg, .png" required>
-    <input type="submit" value="Save">
-  </form>
+
+  <div class="container">
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+      <a class="navbar-brand" href="{{ url_for('socialize.user_feed') }}">Feed</a>
+      <a class="navbar-brand" href="{{ url_for('auth.logout') }}">Logout</a>
+    </nav>
+  </div>
+  <br />
+
+  <div class="container">
+    <form method="post" enctype="multipart/form-data">
+      <div class="form-group">
+        <label for="inputAddress">Caption</label>
+        <input
+          type="text"
+          class="form-control"
+          name="image_caption"
+          id="image_caption"
+          value="{{ request.form['image_caption'] }}"
+          required />
+      </div>
+
+      <div class="custom-file">
+        <input 
+          type="file" 
+          name="file" 
+          class="custom-file-input" 
+          accept=".jpg, .jpeg, .png" 
+          required />
+        <label class="custom-file-label" for="customFile">Choose file</label>
+      </div>
+
+      <br />
+      <br />
+
+      <input type="submit" value="Save" class="btn-block">
+    </form>
+  </div>
 {% endblock %}

@@ -1,17 +1,15 @@
-{% extends 'base.html' %} {% block content %}
+{% extends 'base.html' %}
 
-<h1>Make new Connections!</h1>
+{% block content %}
 
-<ul class="icons">
-  <li>
-    <a class="action" href="{{ url_for('socialize.user_connection') }}">
-      Your Connections
-    </a>
-  </li>
-  <li>
-    <a class="action" href="{{ url_for('socialize.user_feed') }}">User Feed</a>
-  </li>
-</ul>
+<div class="container">
+  <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <a class="navbar-brand" href="{{ url_for('socialize.user_feed') }}">Feed</a>
+    <a class="navbar-brand" href="{{ url_for('socialize.user_connection') }}">Following</a>
+    <a class="navbar-brand" href="{{ url_for('auth.logout') }}">Logout</a>
+  </nav>
+</div>
+<br />
 
 <div class="container">
   {% for user in users %}
@@ -22,8 +20,9 @@
       name="new_user_id"
       value="{{ user['user_id']}}"
     />
-    <li class="list-group-item">{{ user.username }}</li>
-    <input type="submit" value="Connect" />
+    <button type="submit" class="btn-block">
+      {{ user.username }}
+    </button>
   </form>
   {% endfor %}
 </div>
