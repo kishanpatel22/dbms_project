@@ -53,6 +53,7 @@
             <p>{{ post['image_caption'] }}</p>
             
             <ul class="icons">
+                <!-- like -->
                 <li>
                     {% if post[-1] != None : %}
                         <button style="color : green;" onclick="
@@ -67,6 +68,7 @@
                     {% endif %}
                 </li>
 
+                <!-- comment -->
                 <li>
                     <button
                       onclick="share('{{ post['image_url']|safe }}/{{ post['image_caption']|safe }}')"
@@ -77,6 +79,7 @@
                     </button>
                 </li>
 
+                <!-- share -->
                 <li>
                     <button
                       onclick="share('{{ post['image_url']|safe }}/{{ post['image_caption']|safe }}')"
@@ -85,6 +88,7 @@
                     </button>
                 </li>
 
+                <!-- delete -->
                 {% if g.user['user_id'] == post['post_user_id'] %}
                 <li>
                     <button

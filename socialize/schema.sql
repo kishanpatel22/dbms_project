@@ -23,7 +23,7 @@ CREATE TABLE user (
     num_followers INTEGER default 0 check(num_followers >= 0),
     num_followings INTEGER default 0 check(num_followings >= 0),
     num_posts INTEGER default 0 check(num_posts >= 0),
-    FOREIGN KEY (user_id) REFERENCES user_info (user_id)
+    FOREIGN KEY (user_id) REFERENCES user_info (user_id) ON DELETE CASCADE
 );
 
 /* TODO : autoincrement has problem */
@@ -36,7 +36,7 @@ CREATE TABLE posts (
     image_caption TEXT,
     created TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (post_user_id, post_id)
-    FOREIGN KEY (post_user_id) REFERENCES user (user_id)
+    FOREIGN KEY (post_user_id) REFERENCES user (user_id) ON DELETE CASCADE
 );
 
 
@@ -46,8 +46,8 @@ CREATE TABLE connections (
     mutual_connection BOOLEAN default False,
     created TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (user_id_follower, user_id_following)
-    FOREIGN KEY (user_id_follower) REFERENCES user (user_id),
-    FOREIGN KEY (user_id_following) REFERENCES user (user_id)
+    FOREIGN KEY (user_id_follower) REFERENCES user (user_id) ON DELETE CASCADE,
+    FOREIGN KEY (user_id_following) REFERENCES user (user_id) ON DELETE CASCADE
 );
 
 
@@ -58,9 +58,9 @@ CREATE TABLE user_activity (
     type_of_activity INTEGER,
     created TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (user_id, post_id, post_user_id, type_of_activity)
-    FOREIGN KEY (user_id) REFERENCES user (user_id),
-    FOREIGN KEY (post_user_id) REFERENCES post (user_id),
-    FOREIGN KEY (post_id) REFERENCES post (posts_id)
+    FOREIGN KEY (user_id) REFERENCES user (user_id) ON DELETE CASCADE,
+    FOREIGN KEY (post_user_id) REFERENCES posts (user_id) ON DELETE CASCADE,
+    FOREIGN KEY (post_id) REFERENCES posts (posts_id) ON DELETE CASCADE
 );
 
 
@@ -70,9 +70,9 @@ CREATE TABLE likes (
     post_user_id INTEGER,
     created TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (user_id, post_id, post_user_id),
-    FOREIGN KEY (user_id) REFERENCES user (user_id),
-    FOREIGN KEY (post_user_id) REFERENCES post (user_id),
-    FOREIGN KEY (post_id) REFERENCES post (posts_id)
+    FOREIGN KEY (user_id) REFERENCES user (user_id) ON DELETE CASCADE,
+    FOREIGN KEY (post_user_id) REFERENCES posts (user_id) ON DELETE CASCADE,
+    FOREIGN KEY (post_id) REFERENCES posts (posts_id) ON DELETE CASCADE
 );
 
 CREATE TABLE comments (
@@ -83,21 +83,20 @@ CREATE TABLE comments (
     comment_text TEXT NOT NULL,
     created TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (comment_id, user_id, post_id, post_user_id),
-    FOREIGN KEY (user_id) REFERENCES user (user_id),
-    FOREIGN KEY (post_user_id) REFERENCES post (user_id),
-    FOREIGN KEY (post_id) REFERENCES post (posts_id)
+    FOREIGN KEY (user_id) REFERENCES user (user_id) ON DELETE CASCADE,
+    FOREIGN KEY (post_user_id) REFERENCES posts (user_id) ON DELETE CASCADE,
+    FOREIGN KEY (post_id) REFERENCES posts (posts_id) ON DELETE CASCADE
 );
 
 CREATE TABLE share (
     user_id integer,
     post_id integer,
     post_user_id INTEGER,
-    type_of_activity INTEGER,
     created TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (user_id, post_id, post_user_id),
-    FOREIGN KEY (user_id) REFERENCES user (user_id),
-    FOREIGN KEY (post_user_id) REFERENCES post (user_id),
-    FOREIGN KEY (post_id) REFERENCES post (posts_id)
+    FOREIGN KEY (user_id) REFERENCES user (user_id) ON DELETE CASCADE,
+    FOREIGN KEY (post_user_id) REFERENCES posts (user_id) ON DELETE CASCADE,
+    FOREIGN KEY (post_id) REFERENCES posts (posts_id) ON DELETE CASCADE
 );
 
 -- For debugging purposes

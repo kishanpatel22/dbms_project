@@ -291,7 +291,7 @@ def comment(post_id, post_user_id):
                 AND post_user_id = ?
             ORDER BY created DESC
             """,
-            (post_id, post_user_id))
+            (post_id, post_user_id)).fetchall()
 
     return render_template('socialize/comment.html', comments=comments,
                             post_id=post_id, post_user_id=post_user_id)
@@ -305,6 +305,14 @@ def delete(post_id, image_url):
     db = get_db()
     db.execute('DELETE FROM posts WHERE post_id = ? AND post_user_id = ?',
                (post_id, g.user['user_id']))
+    db.execute(
+        """
+        UPDATE user
+        SET num_posts = num_posts-1
+        WHERE user_id = ?
+        """,
+        (g.user['user_id'],)
+    )
     db.commit()
     return redirect(url_for('socialize.user_feed'))
 
