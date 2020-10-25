@@ -35,7 +35,7 @@ CREATE TABLE posts (
     image_url TEXT,
     image_caption TEXT,
     created TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    PRIMARY KEY (post_user_id, post_id)
+    PRIMARY KEY (post_user_id, post_id),
     FOREIGN KEY (post_user_id) REFERENCES user (user_id) ON DELETE CASCADE
 );
 
@@ -45,7 +45,7 @@ CREATE TABLE connections (
     user_id_following INTEGER,
     mutual_connection BOOLEAN default False,
     created TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    PRIMARY KEY (user_id_follower, user_id_following)
+    PRIMARY KEY (user_id_follower, user_id_following),
     FOREIGN KEY (user_id_follower) REFERENCES user (user_id) ON DELETE CASCADE,
     FOREIGN KEY (user_id_following) REFERENCES user (user_id) ON DELETE CASCADE
 );
@@ -57,7 +57,7 @@ CREATE TABLE user_activity (
     post_user_id INTEGER,
     type_of_activity INTEGER,
     created TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    PRIMARY KEY (user_id, post_id, post_user_id, type_of_activity)
+    PRIMARY KEY (user_id, post_id, post_user_id, type_of_activity),
     FOREIGN KEY (user_id) REFERENCES user (user_id) ON DELETE CASCADE,
     FOREIGN KEY (post_user_id) REFERENCES posts (user_id) ON DELETE CASCADE,
     FOREIGN KEY (post_id) REFERENCES posts (posts_id) ON DELETE CASCADE
