@@ -70,9 +70,7 @@
 
                 <!-- comment -->
                 <li>
-                    <button
-                      onclick="share('{{ post['image_url']|safe }}/{{ post['image_caption']|safe }}')"
-                    >
+                    <button>
                       <a href="/comment/{{ post['post_id'] }}/{{ post['post_user_id'] }}">
                         <i class="fas fa-comment"></i>
                       </a>
@@ -91,9 +89,7 @@
                 <!-- delete -->
                 {% if g.user['user_id'] == post['post_user_id'] %}
                 <li>
-                    <button
-                      onclick="share('{{ post['image_url']|safe }}/{{ post['image_caption']|safe }}')"
-                    >
+                    <button>
                       <a href="/delete/{{ post['post_id'] }}/{{ post['image_url']|safe }}">
                         <i class="fas fa-trash"></i>
                       </a>
