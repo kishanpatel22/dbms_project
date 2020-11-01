@@ -38,7 +38,35 @@
 
 {% block content %}
 
+
 <div class="page-wrapper bg-gra-02 p-t-130 p-b-100 font-poppins">
+  <div class="wrapper wrapper--w680">
+    <div class="card card-4">
+      <div class="card-body" style="padding: 2em;">
+        <h4 style="text-align: center;">Hey {{ user_info['username'] }}</h4>
+        <br/>
+        <div style="display: flex; flex-direction: row; justify-content: space-between">
+          <div class="col-sm">
+            {{ user_info['num_followers'] }} Posts
+          </div>
+          <div class="col-sm">
+            {{ user_info['num_followings'] }} Following
+          </div>
+          <div class="col-sm">
+            {{ user_info['num_posts'] }} Followers
+          </div>
+          <div class="col-sm">
+            <a href="{{ url_for('socialize.user_activity') }}" style="text-decoration: none">
+              User Activity
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <br />
+
   <div class="wrapper wrapper--w680">
     <div class="card card-4">
       <div class="card-body">

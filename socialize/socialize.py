@@ -449,9 +449,10 @@ def profile():
 
     user_info = db.execute(
         """
-        SELECT username, data_of_birth, email_id, phone_number
-        FROM user_info
-        WHERE user_id = ?
+        SELECT username, data_of_birth, email_id, phone_number, num_followers, num_followings, num_posts
+        FROM user_info, user
+        WHERE user_info.user_id = ?
+            AND user_info.user_id = user.user_id
         """,
         (g.user['user_id'],)
     ).fetchone()
@@ -514,5 +515,5 @@ def profile_update():
     )
     db.commit()
 
-    return redirect(url_for('socialize.index'))
+    return redirect(url_for('socialize.user_feed'))
 

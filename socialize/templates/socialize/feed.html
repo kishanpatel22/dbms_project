@@ -8,17 +8,6 @@
         
         {% if g.user %}
         <h4><a href="{{ url_for('socialize.profile')}}"> {{ g.user['username'] }} </a></h4>
-        <ul class="icons">
-            <li style="padding: 0.25em;">
-                <a href="{{ url_for('socialize.create') }}">Posts</a>
-            </li>
-            <li style="padding: 0.25em;">
-                <a href="{{ url_for('socialize.connection')}}">Following</a>
-            </li>
-            <li>
-                <a href="{{ url_for('auth.logout') }}">Followers</a>
-            </li>
-        </ul>
 
         <ul class="icons">
             {% if url_for(request.endpoint) == url_for('socialize.index') %}
@@ -35,9 +24,6 @@
             </li>
             <li style="padding: 0.25em;">
                 <a href="{{ url_for('socialize.connection')}}">Connect</a>
-            </li>
-            <li style="padding: 0.25em;">
-                <a href="{{ url_for('socialize.user_activity')}}">User Activity</a>
             </li>
             <li>
                 <a href="{{ url_for('auth.logout') }}">Logout</a>
