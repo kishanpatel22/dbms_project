@@ -22,8 +22,8 @@
     </form>
 
     {% for comment in comments %}
-        <p>{{ comment['user_id'] }} commented on 
-            {{ comment['created'].strftime('%d-%m-%Y') }} <br />
+        <p>{{ comment['username'] }} commented on 
+            {{ comment['created'].strftime('%B %d, %Y') }} <br />
             {{ comment['comment_text']}}
         </p>
     {% endfor %}

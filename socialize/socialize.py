@@ -387,10 +387,11 @@ def comment(post_id, post_user_id):
     # select all the comments for the post to display 
     comments = db.execute(
             """
-            SELECT user_id, comment_text, created
-            FROM comments
+            SELECT comments.user_id, comment_text, created, username
+            FROM comments, user_info
             WHERE post_id = ?
                 AND post_user_id = ?
+                AND user_info.user_id = comments.user_id
             ORDER BY created DESC
             """,
             (post_id, post_user_id)).fetchall()
