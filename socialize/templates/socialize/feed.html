@@ -4,10 +4,22 @@
 <main id="main">
     <!-- Header -->
     <header id="header">
-        <h1>Socialize</h1>
+        <h1 style="margin: 0">Socialize</h1>
         
         {% if g.user %}
         <h4><a href="{{ url_for('socialize.profile')}}"> {{ g.user['username'] }} </a></h4>
+        <ul class="icons">
+            <li style="padding: 0.25em;">
+                <a href="{{ url_for('socialize.create') }}">Posts</a>
+            </li>
+            <li style="padding: 0.25em;">
+                <a href="{{ url_for('socialize.connection')}}">Following</a>
+            </li>
+            <li>
+                <a href="{{ url_for('auth.logout') }}">Followers</a>
+            </li>
+        </ul>
+
         <ul class="icons">
             {% if url_for(request.endpoint) == url_for('socialize.index') %}
             <li style="padding: 0.25em;">
@@ -52,7 +64,7 @@
                 alt="{{ post['image_caption'] }}"
             />
             </a>
-            <h4>by {{ post['post_user_id'] }} on {{ post['created'].strftime('%Y-%m-%d') }}</h4>
+            <h4>by {{ post['username'] }} on {{ post['created'].strftime('%B %d, %Y') }}</h4>
             <p>{{ post['image_caption'] }}</p>
             
             <ul class="icons">

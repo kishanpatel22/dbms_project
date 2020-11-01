@@ -14,6 +14,13 @@ def register():
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
+        birthday = request.form['birthday']
+        email = request.form['email']
+        phone = request.form['phone']
+
+        print(username, password, birthday, email, phone)
+        print(type(username), type(password), type(birthday), type(email), type(phone))
+
         db = get_db()
         error = None
 
@@ -28,18 +35,27 @@ def register():
 
         if error is None:
             # inserts into user_info table
+                # INSERT INTO user_info (username, password, email_id)
             db.execute(
-                'INSERT INTO user_info (username, password) VALUES (?, ?)',
-                (username, password)
+                """
+                INSERT INTO user_info (username, password, data_of_birth, email_id, phone_number)
+                VALUES (?, ?, ?, ?, ?)
+                """,
+                (username, password, birthday, email, phone)
+                # (username, password, email)
                 # (username, generate_password_hash(password))
             )
-            user = db.execute(
-                    'SELECT * FROM user_info WHERE username = ?', (username,)
-            ).fetchone()
+            user_id = db.execute(
+                'SELECT user_id FROM user_info WHERE username = ?', (username,)
+            ).fetchone()[0]
             # inserts into user table
+
             db.execute(
-                'INSERT INTO user (user_id) VALUES (?)',
-                (user['user_id'],)
+                """
+                INSERT INTO user (user_id)
+                VALUES (?)
+                """,
+                (user_id,)
             )
             db.commit()
             return redirect(url_for('auth.login'))

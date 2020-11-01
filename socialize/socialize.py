@@ -21,7 +21,13 @@ bp = Blueprint('socialize', __name__)
 def index():
     db = get_db()
     posts = db.execute(
-        'SELECT * FROM posts ORDER BY created DESC LIMIT 10'
+        """
+        SELECT username, post_user_id, post_id, image_url, image_caption, created
+        FROM posts, user_info
+        WHERE post_user_id = user_id
+        ORDER BY created DESC
+        LIMIT 10
+        """
     ).fetchall()
     return render_template('socialize/feed.html', posts=posts)
 
@@ -68,7 +74,8 @@ def create():
 
             db.execute(
                 """
-                INSERT INTO posts (image_caption, image_url, post_user_id, post_id)
+                INSERT INTO posts
+                (image_caption, image_url, post_user_id, post_id)
                 VALUES (?, ?, ?, ?)
                 """,
                 (caption, image_url, user_id, num_post + 1)
@@ -94,28 +101,6 @@ def create():
             return redirect(url_for('socialize.user_feed'))
 
     return render_template('socialize/create.html')
-
-
-def get_post(post_id, post_user_id, check_author=True):
-    post = get_db().execute(
-        'SELECT * FROM posts WHERE post_id = ? AND post_user_id = ?',
-        (post_id, post_user_id)
-    ).fetchone()
-
-    if post is None:
-        abort(404, "Post id {0} doesn't exist.".format(id))
-
-    if check_author and post['post_user_id'] != g.user['user_id']:
-        abort(403)
-
-    return post
-
-
-# user news feed
-@bp.route('/profile')
-@login_required
-def profile():
-    return render_template('socialize/profile.html')
 
 
 # user news feed
@@ -166,7 +151,8 @@ def connection():
         connection_user_id = request.form['new_user_id']
         db.execute(
             """
-            INSERT INTO connections (user_id_follower, user_id_following)
+            INSERT INTO connections
+            (user_id_follower, user_id_following)
             VALUES (?, ?)
             """,
             (g.user['user_id'], connection_user_id)
@@ -176,7 +162,7 @@ def connection():
     else:
         peoples = db.execute(
                 """
-                SELECT *
+                SELECT user_id, username
                 FROM user_info
                 WHERE user_id NOT IN (
                     SELECT user_id_following
@@ -197,7 +183,7 @@ def user_connection():
     db = get_db()
     user_friends = db.execute(
             """
-            SELECT *
+            SELECT user_id, username
             FROM user_info
             WHERE user_id IN (
                 SELECT user_id_following
@@ -277,6 +263,15 @@ def like(post_id, post_user_id):
             """, (g.user['user_id'], post_id, post_user_id, 1))
         db.commit() 
 
+    db.execute(
+        """
+        INSERT INTO likes
+        (user_id, post_id, post_user_id)
+        VALUES (?, ?, ?)
+        """,
+        (g.user['user_id'], post_id, post_user_id)
+    )
+    db.commit()
     return redirect(url_for('socialize.user_feed'))
 
 
@@ -285,6 +280,7 @@ def like(post_id, post_user_id):
 def share(image_url, caption):
     db = get_db()
     user_id = g.user['user_id']
+    caption = "Shared: " + caption
 
     num_post = db.execute(
         """
@@ -293,8 +289,12 @@ def share(image_url, caption):
         WHERE user_id = ?
         """,
         (user_id,)
-    ).fetchone()['num_posts']
-    share_image_url = f"{user_id}_{num_post+1}." + image_url.rsplit(".")[-1]
+    ).fetchone()[0]
+
+    post_info, extension = image_url.rsplit(".", 1)
+    post_user_id, post_id = post_info.rsplit("_", 1)
+
+    share_image_url = f"{user_id}_{num_post+1}.{extension}"# + image_url.rsplit(".")[-1]
 
     # file.save(os.path.join(current_app.config['IMAGE_FOLDER'], image_url))
     src = f"{current_app.config['IMAGE_FOLDER']}/{image_url}"
@@ -303,10 +303,19 @@ def share(image_url, caption):
 
     db.execute(
         """
-        INSERT INTO posts (image_caption, image_url, post_user_id, post_id)
+        INSERT INTO posts
+        (image_caption, image_url, post_user_id, post_id)
         VALUES (?, ?, ?, ?)
         """,
         (caption, share_image_url, user_id, num_post + 1)
+    )
+    db.execute(
+        """
+        INSERT INTO share
+        (user_id, post_id, post_user_id)
+        VALUES (?, ?, ?)
+        """,
+        (user_id, post_user_id, post_id)
     )
     db.execute(
         """
@@ -335,21 +344,22 @@ def share(image_url, caption):
 def comment(post_id, post_user_id):
     db = get_db()
     if request.method == 'POST':
-        user_comments = db.execute(
+        num_user_comments = db.execute(
                         """
-                        SELECT *
+                        SELECT COUNT(comment_id)
                         FROM comments
                         WHERE post_id = ?
                             AND post_user_id = ?
                             AND user_id = ?
                         """,
-                        (post_id, post_user_id, g.user['user_id'])).fetchall()
-        num_user_comments = len(user_comments)
+                        (post_id, post_user_id, g.user['user_id'])
+                    ).fetchone()[0]
 
         comment_text = request.form['comment']
         db.execute(
             """
-            INSERT INTO comments (comment_id, user_id, post_id, post_user_id, comment_text)
+            INSERT INTO comments
+            (comment_id, user_id, post_id, post_user_id, comment_text)
             VALUES (?, ?, ?, ?, ?)
             """,
             (num_user_comments + 1, g.user['user_id'], post_id, post_user_id, comment_text))
@@ -373,7 +383,7 @@ def comment(post_id, post_user_id):
     # select all the comments for the post to display 
     comments = db.execute(
             """
-            SELECT *
+            SELECT user_id, comment_text, created
             FROM comments
             WHERE post_id = ?
                 AND post_user_id = ?
@@ -411,7 +421,6 @@ def delete(post_id, image_url):
 
     return redirect(url_for('socialize.user_feed'))
 
-
 @bp.route('/user_activity')
 @login_required
 def user_activity():
@@ -432,31 +441,69 @@ def user_activity():
     return render_template('socialize/user_activity.html', user_activities=user_activities)
 
 
-"""
 @bp.route('/<int:id>/update', methods=('GET', 'POST'))
+@bp.route('/profile')
 @login_required
-def update(id):
-    post = get_post(id)
+def profile():
+    db = get_db()
 
-    if request.method == 'POST':
-        title = request.form['title']
-        body = request.form['body']
-        error = None
+    user_info = db.execute(
+        """
+        SELECT username, data_of_birth, email_id, phone_number
+        FROM user_info
+        WHERE user_id = ?
+        """,
+        (g.user['user_id'],)
+    ).fetchone()
 
-        if not title:
-            error = 'Title is required.'
+    return render_template('socialize/profile.html', user_info=user_info)
 
-        if error is not None:
-            flash(error)
-        else:
-            db = get_db()
-            db.execute(
-                'UPDATE post SET title = ?, body = ?'
-                ' WHERE id = ?',
-                (title, body, id)
-            )
-            db.commit()
-            return redirect(url_for('socialize.index'))
 
-    return render_template('socialize/update.html', post=post)
-"""
+@bp.route('/profile/update', methods=('GET', 'POST'))
+@login_required
+def profile_update():
+    if request.method != 'POST':
+        return redirect(url_for('socialize.profile'))
+
+    username = request.form['username']
+    old_password = request.form['old_password']
+    new_password = request.form['new_password']
+    birthday = request.form['birthday']
+    email = request.form['email']
+    phone = request.form['phone']
+
+    # if not all((username, old_password, new_password, birthday, email, phone,)):
+    #     flash("Please fill all the details!")
+    #     return redirect(url_for('socialize.profile'))
+
+    db = get_db()
+
+    curr_password = db.execute(
+        """
+        SELECT password
+        FROM user_info
+        WHERE user_id = ?
+        """,
+        (g.user['user_id'],)
+    ).fetchone()
+
+    if new_password and curr_password != old_password:
+        flash("Old password was wrongly entered!")
+        return redirect(url_for('socialize.profile'))
+
+    db.execute(
+        """
+        UPDATE user_info
+        SET username = ?,
+            password = ?,
+            data_of_birth = ?,
+            email_id = ?,
+            phone_number = ?
+        WHERE user_id = ?
+        """,
+        (username, new_password, birthday, email, phone, g.user['user_id'])
+    )
+    db.commit()
+
+    return redirect(url_for('socialize.index'))
+

@@ -13,7 +13,7 @@ CREATE TABLE user_info (
     password TEXT,
     data_of_birth TEXT,
     email_id TEXT,
-    phone_number INTEGER,
+    phone_number TEXT,
     profile_photo TEXT
 );
 
@@ -93,16 +93,27 @@ CREATE TABLE share (
     post_id integer,
     post_user_id INTEGER,
     created TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    PRIMARY KEY (user_id, post_id, post_user_id),
+    
+    PRIMARY KEY (user_id, post_id, post_user_id, created),
+
     FOREIGN KEY (user_id) REFERENCES user (user_id) ON DELETE CASCADE,
     FOREIGN KEY (post_user_id) REFERENCES posts (user_id) ON DELETE CASCADE,
     FOREIGN KEY (post_id) REFERENCES posts (posts_id) ON DELETE CASCADE
 );
 
 -- For debugging purposes
-INSERT INTO user_info (username, password) VALUES ("admin", "admin");
-INSERT INTO user_info (username, password) VALUES ("test", "test");
-INSERT INTO user_info (username, password) VALUES ("user", "user");
+INSERT INTO user_info 
+(username, password, data_of_birth, email_id, phone_number)
+VALUES ("admin", "admin", "11/01/2000", "a@b.c", "1234567890");
+
+INSERT INTO user_info 
+(username, password, data_of_birth, email_id, phone_number)
+VALUES ("test", "test", "11/02/2000", "a@b.c", "1234567890");
+
+INSERT INTO user_info 
+(username, password, data_of_birth, email_id, phone_number)
+VALUES ("user", "user", "11/03/2000", "a@b.c", "1234567890");
+
 
 INSERT INTO user (user_id) VALUES (1);
 INSERT INTO user (user_id) VALUES (2);
