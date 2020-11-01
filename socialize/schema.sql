@@ -57,7 +57,7 @@ CREATE TABLE user_activity (
     post_user_id INTEGER,
     type_of_activity INTEGER,
     created TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    PRIMARY KEY (user_id, post_id, post_user_id, type_of_activity),
+    PRIMARY KEY (user_id, post_id, post_user_id, type_of_activity, created),
     FOREIGN KEY (user_id) REFERENCES user (user_id) ON DELETE CASCADE,
     FOREIGN KEY (post_user_id) REFERENCES posts (user_id) ON DELETE CASCADE,
     FOREIGN KEY (post_id) REFERENCES posts (posts_id) ON DELETE CASCADE

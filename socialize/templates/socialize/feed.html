@@ -24,6 +24,9 @@
             <li style="padding: 0.25em;">
                 <a href="{{ url_for('socialize.connection')}}">Connect</a>
             </li>
+            <li style="padding: 0.25em;">
+                <a href="{{ url_for('socialize.user_activity')}}">User Activity</a>
+            </li>
             <li>
                 <a href="{{ url_for('auth.logout') }}">Logout</a>
             </li>
@@ -58,30 +61,38 @@
                     {% if post[-1] != None : %}
                         <button style="color : green;" onclick="
                                 like('{{ post['post_id'] }}/{{ post['post_user_id'] }}')">
-                            <i class="fas fa-heart"></i>
+                            <span>
+                                {{ post['num_likes'] }}
+                                <i class="fas fa-heart"></i>
+                            </span>
                         </button>
                     {% else %}
                         <button onclick="
                                 like('{{ post['post_id'] }}/{{ post['post_user_id'] }}')">
-                            <i class="fas fa-heart"></i>
+                            <span>
+                                {{ post['num_likes'] }}
+                                <i class="fas fa-heart"></i>
+                            </span>
                         </button>
                     {% endif %}
                 </li>
 
                 <!-- comment -->
                 <li>
-                    <button>
-                      <a href="/comment/{{ post['post_id'] }}/{{ post['post_user_id'] }}">
-                        <i class="fas fa-comment"></i>
-                      </a>
-                    </button>
+                    <a href="/comment/{{ post['post_id'] }}/{{ post['post_user_id'] }}">
+                        <button>
+                            <span>
+                                {{ post['num_comments'] }}
+                                <i class="fas fa-comment"></i>
+                            </span>
+                        </button>
+                    </a>
                 </li>
 
                 <!-- share -->
                 <li>
-                    <button
-                      onclick="share('{{ post['image_url']|safe }}/{{ post['image_caption']|safe }}')"
-                    >
+                    <button onclick="
+                            share('{{ post['image_url']|safe }}/{{ post['image_caption']|safe }}')">
                       <i class="fas fa-share"></i>
                     </button>
                 </li>
@@ -89,11 +100,11 @@
                 <!-- delete -->
                 {% if g.user['user_id'] == post['post_user_id'] %}
                 <li>
-                    <button>
-                      <a href="/delete/{{ post['post_id'] }}/{{ post['image_url']|safe }}">
-                        <i class="fas fa-trash"></i>
-                      </a>
-                    </button>
+                    <a href="/delete/{{ post['post_id'] }}/{{ post['image_url']|safe }}">
+                        <button>
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </a>
                 </li>
                 {% endif %}
             </ul>
