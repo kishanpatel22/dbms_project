@@ -43,16 +43,16 @@
     <div class="card card-4">
       <div class="card-body" style="padding: 2em;">
         <h4 style="text-align: center;">Hey {{ user_info['username'] }}</h4>
-        <br/>
+        <hr style="margin: 1em;"/>
         <div style="display: flex; flex-direction: row; justify-content: space-between">
           <div class="col-sm">
-            {{ user_info['num_followers'] }} Posts
+            {{ user_info['num_posts'] }} Posts
           </div>
           <div class="col-sm">
             {{ user_info['num_followings'] }} Following
           </div>
           <div class="col-sm">
-            {{ user_info['num_posts'] }} Followers
+            {{ user_info['num_followers'] }} Followers
           </div>
           <div class="col-sm">
             <a href="{{ url_for('socialize.user_activity') }}" style="text-decoration: none">
@@ -181,6 +181,11 @@
 
           <div class="p-t-15">
             <button class="btn btn--radius-2 btn--blue" type="submit">Update</button>
+            <a href="{{ url_for('socialize.user_feed') }}">
+              <button class="btn btn--radius-2" style="color: blue">
+                Feed
+              </button>
+            </a>
           </div>
         </form>
       </div>
