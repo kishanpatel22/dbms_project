@@ -8,13 +8,13 @@
       content="width=device-width, initial-scale=1, user-scalable=no"
     />
 
+
     <link
-      href="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css"
       rel="stylesheet"
-      id="bootstrap-css"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+      integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z"
+      crossorigin="anonymous"
     />
-    <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
-    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <link
       rel="stylesheet"
       href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"
@@ -24,14 +24,35 @@
 
     <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}" />
 
-    <noscript
-      ><link rel="stylesheet" href="{{ url_for('static', filename='css/noscript.css') }}"
-    /></noscript>
+    <noscript>
+      <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='css/noscript.css') }}"
+      />
+    </noscript>
+
+    {% block imports %}{% endblock %}
   </head>
 
   <body>
-    {% block content %}{% endblock %} {% for message in get_flashed_messages() %}
-    <div class="flash">{{ message }}</div>
-    {% endfor %}
+    {% block content %}{% endblock %}
+
+    <div style="position: fixed; bottom: 0; width: 100vw; padding: 1em; z-index: 10000;">
+      {% for message in get_flashed_messages() %}
+      <div class="alert alert-warning alert-dismissible fade show" role="alert">
+        <!-- <strong>Holy guacamole!</strong> You should check in on some of those fields below. -->
+        {{ message }}
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      {% endfor %}
+    </div>
+
+    <script
+      src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"
+      integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV"
+      crossorigin="anonymous"
+    ></script>
   </body>
 </html>

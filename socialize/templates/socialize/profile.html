@@ -1,15 +1,174 @@
-{% extends 'base.html' %}
+{% block imports %}
 
-{% block header %}
-  <h1>{% block title %}Feed{% endblock %}</h1>
-  {% if g.user %}
-    <a class="action" href="{{ url_for('socialize.create') }}">New</a>
-    <a class="action" href="{{ url_for('socialize.index') }}">Trending</a>
-    <a class="action" href="{{ url_for('socialize.user_feed') }}">Feed</a>
-    <a class="action" href="{{ url_for('socialize.connection') }}">Connections</a>
-  {% endif %}
-{% endblock %}
+<!-- Title Page-->
+<title>Register on Socialize</title>
+
+<!-- Icons font CSS-->
+<link
+  href="{{ url_for('static', filename='vendor/mdi-font/css/material-design-iconic-font.min.css') }}"
+  rel="stylesheet"
+  media="all"
+/>
+<!-- Font special for pages-->
+<link
+  href="https://fonts.googleapis.com/css?family=Poppins:100,100i,200,200i,300,300i,400,400i,500,500i,600,600i,700,700i,800,800i,900,900i"
+  rel="stylesheet"
+/>
+
+<!-- Vendor CSS-->
+<link
+  href="{{ url_for('static', filename='vendor/select2/select2.min.css') }}"
+  rel="stylesheet"
+  media="all"
+/>
+<link
+  href="{{ url_for('static', filename='vendor/datepicker/daterangepicker.css') }}"
+  rel="stylesheet"
+  media="all"
+/>
+
+<!-- Main CSS-->
+<link
+  href="{{ url_for('static', filename='css/register.css') }}"
+  rel="stylesheet"
+  media="all"
+/>
+
+{% endblock imports %}
 
 {% block content %}
-  Profile
-{% endblock %}
+
+<div class="page-wrapper bg-gra-02 p-t-130 p-b-100 font-poppins">
+  <div class="wrapper wrapper--w680">
+    <div class="card card-4">
+      <div class="card-body">
+        <h2 class="title">Profile Update</h2>
+
+        <form
+          method="post"
+          action="{{ url_for('socialize.profile_update') }}"
+          enctype="multipart/form-data"
+        >
+          <div class="row row-space">
+            <div class="col-2">
+              <div class="input-group">
+                <label class="label" for="username">Username</label>
+                <input
+                  class="input--style-4"
+                  type="text"
+                  name="username"
+                  value="{{ user_info['username'] }}"
+                />
+              </div>
+            </div>
+
+            <div class="col-2">
+              <div class="custom-file">
+                <label class="label" for="profile_pic">Profile Photo</label>
+                <input
+                  type="file"
+                  name="profile_pic"
+                  class="input--style-4"
+                  accept=".jpg, .jpeg, .png"
+                />
+              </div>
+            </div>
+          </div>
+
+          <div class="row row-space">
+            <div class="col-2">
+              <div class="input-group">
+                <label class="label" for="old_password">Old Password</label>
+                <input class="input--style-4" type="password" name="old_password" />
+              </div>
+            </div>
+
+            <div class="col-2">
+              <div class="input-group">
+                <label class="label" for="new_password">New Password</label>
+                <input class="input--style-4" type="password" name="new_password" />
+              </div>
+            </div>
+          </div>
+
+          <div class="row row-space">
+            <div class="col-2">
+              <div class="input-group">
+                <label class="label" for="birthday">Birthday</label>
+                <div class="input-group-icon">
+                  <input
+                    class="input--style-4 js-datepicker"
+                    type="text"
+                    name="birthday"
+                    value="{{ user_info['data_of_birth'] }}"
+                  />
+                  <i class="zmdi zmdi-calendar-note input-icon js-btn-calendar"></i>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-2">
+              <div class="input-group">
+                <label class="label">Gender</label>
+                <div class="p-t-10">
+                  <label class="radio-container m-r-45">
+                    Male
+                    <input type="radio" checked="checked" name="gender" value="M" />
+                    <span class="checkmark"></span>
+                  </label>
+                  <label class="radio-container">
+                    Female
+                    <input type="radio" name="gender" value="F" />
+                    <span class="checkmark"></span>
+                  </label>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="row row-space">
+            <div class="col-2">
+              <div class="input-group">
+                <label class="label" for="email">Email</label>
+                <input
+                  class="input--style-4"
+                  type="email"
+                  name="email"
+                  value="{{ user_info['email_id'] }}"
+                />
+              </div>
+            </div>
+
+            <div class="col-2">
+              <div class="input-group">
+                <label class="label" for="phone">Phone Number</label>
+                <input
+                  class="input--style-4"
+                  type="text"
+                  name="phone"
+                  value="{{ user_info['phone_number'] }}"
+                />
+              </div>
+            </div>
+          </div>
+
+          <div class="p-t-15">
+            <button class="btn btn--radius-2 btn--blue" type="submit">Update</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Jquery JS-->
+<script src="{{ url_for('static', filename='vendor/jquery/jquery.min.js') }}"></script>
+<!-- Vendor JS-->
+<script src="{{ url_for('static', filename='vendor/select2/select2.min.js') }}"></script>
+<script src="{{ url_for('static', filename='vendor/datepicker/moment.min.js') }}"></script>
+<script src="{{ url_for('static', filename='vendor/datepicker/daterangepicker.js') }}"></script>
+
+<!-- Main JS-->
+<script src="{{ url_for('static', filename='js/global.js') }}"></script>
+
+{% endblock content %}

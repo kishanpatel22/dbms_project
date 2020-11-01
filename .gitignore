@@ -1,8 +1,8 @@
 *.pyc
 __pycache__/
 
-instance/
-socialize/static/images/
+instance/*
+socialize/static/images/*
 
 .pytest_cache/
 .coverage
