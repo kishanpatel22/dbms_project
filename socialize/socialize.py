@@ -155,8 +155,21 @@ def connection():
             (user_id_follower, user_id_following)
             VALUES (?, ?)
             """,
-            (g.user['user_id'], connection_user_id)
-        )
+            (g.user['user_id'], connection_user_id))
+        db.execute(
+            """
+            UPDATE user
+            SET num_followings = num_followings + 1
+            where user_id = ?
+            """,
+            (g.user['user_id'], ))
+        db.execute(
+            """
+            UPDATE user
+            SET num_followers = num_followers + 1
+            where user_id = ?
+            """,
+            (connection_user_id, ))
         db.commit()
         return redirect(url_for('socialize.connection'))
     else:
@@ -263,15 +276,6 @@ def like(post_id, post_user_id):
             """, (g.user['user_id'], post_id, post_user_id, 1))
         db.commit() 
 
-    db.execute(
-        """
-        INSERT INTO likes
-        (user_id, post_id, post_user_id)
-        VALUES (?, ?, ?)
-        """,
-        (g.user['user_id'], post_id, post_user_id)
-    )
-    db.commit()
     return redirect(url_for('socialize.user_feed'))
 
 

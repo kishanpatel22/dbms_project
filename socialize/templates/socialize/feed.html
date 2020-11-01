@@ -56,22 +56,24 @@
             <ul class="icons">
                 <!-- like -->
                 <li>
-                    {% if post[-1] != None : %}
-                        <button style="color : green;" onclick="
-                                like('{{ post['post_id'] }}/{{ post['post_user_id'] }}')">
-                            <span>
-                                {{ post['num_likes'] }}
-                                <i class="fas fa-heart"></i>
-                            </span>
-                        </button>
+                    {% if post[-1] != None %}
+                        <a href="/like/{{ post['post_id'] }}/{{ post['post_user_id'] }}">
+                            <button style="color:green;">
+                                <span>
+                                    {{ post['num_likes'] }}
+                                    <i class="fas fa-heart"></i>
+                                </span>
+                            </button>
+                        </a>
                     {% else %}
-                        <button onclick="
-                                like('{{ post['post_id'] }}/{{ post['post_user_id'] }}')">
-                            <span>
-                                {{ post['num_likes'] }}
-                                <i class="fas fa-heart"></i>
-                            </span>
-                        </button>
+                        <a href="/like/{{ post['post_id'] }}/{{ post['post_user_id'] }}">
+                            <button>
+                                <span>
+                                    {{ post['num_likes'] }}
+                                    <i class="fas fa-heart"></i>
+                                </span>
+                            </button>
+                        </a>
                     {% endif %}
                 </li>
 
@@ -89,10 +91,11 @@
 
                 <!-- share -->
                 <li>
-                    <button onclick="
-                            share('{{ post['image_url']|safe }}/{{ post['image_caption']|safe }}')">
-                      <i class="fas fa-share"></i>
-                    </button>
+                    <a href="share/{{ post['image_url']|safe }}/{{ post['image_caption']|safe }}">
+                        <button>
+                            <i class="fas fa-share"></i>
+                        </button>
+                    </a>
                 </li>
 
                 <!-- delete -->
@@ -118,20 +121,4 @@
 <script src="{{ url_for('static', filename='js/breakpoints.min.js') }}"></script>
 <script src="{{ url_for('static', filename='js/main.js') }}"></script>
 
-<script>
-function like(like_url) {
-    var xhttp = new XMLHttpRequest();
-    console.log(like_url)
-    xhttp.open("GET", `/like/${like_url}`, true);
-    xhttp.send();
-    window.location.reload()
-}
-function share(share_url) {
-    var xhttp = new XMLHttpRequest();
-    console.log(share_url)
-    xhttp.open("GET", `/share/${share_url}`, true);
-    xhttp.send();
-    window.location.reload()
-}
-</script>
 {% endblock content %}
