@@ -26,7 +26,6 @@ CREATE TABLE user (
     FOREIGN KEY (user_id) REFERENCES user_info (user_id) ON DELETE CASCADE
 );
 
-/* TODO : autoincrement has problem */
 CREATE TABLE posts (
     post_user_id INTEGER,
     post_id INTEGER,

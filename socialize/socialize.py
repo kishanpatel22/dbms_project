@@ -113,9 +113,11 @@ def user_feed():
         """
         SELECT allposts.*, user_like.created
         FROM (
-            SELECT *
+            SELECT post_user_id, post_id, num_likes, num_comments, 
+                   image_url, image_caption, created
             FROM (
-                SELECT *
+                SELECT post_user_id, post_id, num_likes, num_comments, 
+                       image_url, image_caption, created
                 FROM posts
                 WHERE post_user_id IN (
                     SELECT user_id_following
@@ -125,7 +127,8 @@ def user_feed():
 
                 UNION
 
-                SELECT *
+                SELECT post_user_id, post_id, num_likes, num_comments, 
+                       image_url, image_caption, created
                 FROM posts
                 WHERE post_user_id = ?
             )
@@ -136,8 +139,7 @@ def user_feed():
             AND user_like.post_user_id = allposts.post_user_id
             AND user_like.user_id = ?
         """,
-        (g.user['user_id'], g.user['user_id'], g.user['user_id'])
-    ).fetchall()
+        (g.user['user_id'], g.user['user_id'], g.user['user_id'])).fetchall()
 
     return render_template('socialize/feed.html', posts=posts)
 
@@ -461,7 +463,7 @@ def profile():
         """,
         (g.user['user_id'],)
     ).fetchone()
-
+    
     return render_template('socialize/profile.html', user_info=user_info)
 
 
