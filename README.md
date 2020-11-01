@@ -23,3 +23,7 @@
     - Users can also share those posts on their own page.
 
 ![Relational Schema](docs/database_design/relational_schema.png)
+![Feed](docs/screenshots/feed.png)
+![Profile](docs/screenshots/profile.png)
+![Comment](docs/screenshots/comment.png)
+![Connect](docs/screenshots/connect.png)
