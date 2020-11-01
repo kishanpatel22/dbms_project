@@ -89,7 +89,16 @@ def create():
                 (user_id,)
             )
             db.commit()
-            return redirect(url_for('socialize.index'))
+            
+            # keep track of the user post acitivity 
+            db.execute(
+                """
+                INSERT INTO user_activity(user_id, post_id, post_user_id, type_of_activity)
+                VALUES (?, ?, ?, ?)
+                """,
+                (user_id, num_post + 1, user_id, 0))
+            db.commit()
+            return redirect(url_for('socialize.user_feed'))
 
     return render_template('socialize/create.html')
 
@@ -190,6 +199,70 @@ def user_connection():
 @login_required
 def like(post_id, post_user_id):
     db = get_db()
+    # checking is the user has already liked the post
+    user_id_like = db.execute(
+            """
+            SELECT user_id from likes where 
+            post_id = ? and 
+            post_user_id = ? and 
+            user_id = ?
+            """,
+            (post_id, post_user_id, g.user['user_id'])).fetchone()
+
+    # if the user has already liked post then do unlike else do like operation
+    if user_id_like is not None:
+        db.execute(
+            """    
+            DELETE from likes where
+            post_id = ? and
+            post_user_id = ? and
+            user_id = ?
+            """,
+            (post_id, post_user_id, g.user['user_id'])
+        ) 
+        db.execute(
+            """
+            UPDATE posts
+            SET num_likes = num_likes - 1 where
+            post_id = ? and
+            post_user_id = ?
+            """,
+            (post_id, post_user_id))
+        db.commit()
+
+        # keep track of user unlike activity
+        db.execute(
+            """
+            INSERT INTO user_activity(user_id, post_id, post_user_id, type_of_activity)
+            VALUES (?, ?, ?, ?)
+            """, (g.user['user_id'], post_id, post_user_id, 4))
+        db.commit() 
+
+    else :
+        db.execute(
+            """
+            INSERT INTO likes (user_id, post_id, post_user_id)
+            VALUES (?, ?, ?)
+            """,
+            (g.user['user_id'], post_id, post_user_id))
+        db.execute(
+            """
+            UPDATE posts
+            SET num_likes = num_likes + 1 where
+            post_id = ? and
+            post_user_id = ?
+            """,
+            (post_id, post_user_id))
+        db.commit()
+        
+        # keep track of user like activity 
+        db.execute(
+            """
+            INSERT INTO user_activity(user_id, post_id, post_user_id, type_of_activity)
+            VALUES (?, ?, ?, ?)
+            """, (g.user['user_id'], post_id, post_user_id, 1))
+        db.commit() 
+
     db.execute(
         """
         INSERT INTO likes
@@ -253,8 +326,16 @@ def share(image_url, caption):
         (user_id,)
     )
     db.commit()
-    return redirect(url_for('socialize.user_feed'))
 
+    # keep track of user share activity 
+    db.execute(
+        """
+        INSERT INTO user_activity(user_id, post_id, post_user_id, type_of_activity)
+        VALUES (?, ?, ?, ?)
+        """, (g.user['user_id'], num_post + 1, g.user['user_id'], 3))
+    db.commit() 
+
+    return redirect(url_for('socialize.user_feed'))
 
 
 # comment
@@ -282,9 +363,24 @@ def comment(post_id, post_user_id):
             VALUES (?, ?, ?, ?, ?)
             """,
             (num_user_comments + 1, g.user['user_id'], post_id, post_user_id, comment_text))
+        db.execute(
+            """
+            UPDATE posts
+            set num_comments = num_comments + 1 where
+            post_id = ? and post_user_id + ?
+            """,
+            (post_id, post_user_id))
         db.commit()
+        
+        # keep track of the comments activity
+        db.execute(
+            """
+            INSERT INTO user_activity(user_id, post_id, post_user_id, type_of_activity)
+            VALUES (?, ?, ?, ?)
+            """, (g.user['user_id'], post_id, post_user_id, 2))
+        db.commit() 
 
-    # get request to the comments
+    # select all the comments for the post to display 
     comments = db.execute(
             """
             SELECT user_id, comment_text, created
@@ -303,7 +399,6 @@ def comment(post_id, post_user_id):
 @bp.route('/delete/<int:post_id>/<image_url>')
 @login_required
 def delete(post_id, image_url):
-    print(image_url)
     db = get_db()
     db.execute('DELETE FROM posts WHERE post_id = ? AND post_user_id = ?',
                (post_id, g.user['user_id']))
@@ -313,11 +408,40 @@ def delete(post_id, image_url):
         SET num_posts = num_posts-1
         WHERE user_id = ?
         """,
-        (g.user['user_id'],)
-    )
+        (g.user['user_id'],))
     db.commit()
+
+    # keep track of user delete activity 
+    db.execute(
+        """
+        INSERT INTO user_activity(user_id, post_id, post_user_id, type_of_activity)
+        VALUES (?, ?, ?, ?)
+        """, (g.user['user_id'], post_id, g.user['user_id'], 5))
+    db.commit() 
+
     return redirect(url_for('socialize.user_feed'))
 
+@bp.route('/user_activity')
+@login_required
+def user_activity():
+    db = get_db()
+    user_activities = db.execute(
+        """
+        SELECT my_activity.*, user_data.username from (
+            SELECT post_id, post_user_id, type_of_activity, created from user_activity where 
+                user_id = ? 
+                ORDER BY created DESC
+                ) AS my_activity
+            JOIN
+            user_info as user_data on 
+            user_data.user_id = my_activity.post_user_id
+        """,
+        (g.user['user_id'], )).fetchall()
+    
+    return render_template('socialize/user_activity.html', user_activities=user_activities)
+
+
+@bp.route('/<int:id>/update', methods=('GET', 'POST'))
 @bp.route('/profile')
 @login_required
 def profile():
