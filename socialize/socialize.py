@@ -485,11 +485,20 @@ def profile_update():
         WHERE user_id = ?
         """,
         (g.user['user_id'],)
-    ).fetchone()
+    ).fetchone()[0]
 
-    if new_password and curr_password != old_password:
-        flash("Old password was wrongly entered!")
-        return redirect(url_for('socialize.profile'))
+    # if (not new_password) or (curr_password != old_password):
+    #     flash("Old password was wrongly entered!")
+    #     return redirect(url_for('socialize.profile'))
+
+    print(old_password, new_password, curr_password)
+
+    if new_password:
+        if curr_password != old_password:
+            flash("Old password was wrongly entered!")
+            return redirect(url_for('socialize.profile'))
+    else:
+        new_password = curr_password
 
     db.execute(
         """
