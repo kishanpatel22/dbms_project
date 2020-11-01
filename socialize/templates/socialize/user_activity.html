@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="container">
+  <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <a class="navbar-brand" href="{{ url_for('socialize.user_feed') }}">Feed</a>
+    <a class="navbar-brand" href="{{ url_for('socialize.user_connection') }}">Following</a>
+    <a class="navbar-brand" href="{{ url_for('auth.logout') }}">Logout</a>
+  </nav>
+</div>
+<br />
+
+<div class="container">
+    <ol>
+    {% for user_activity in user_activities %}
+        <li>
+            {% if user_activity['type_of_activity'] == 0 %}
+                <h1> You created new post on {{ user_activity['created'].strftime('%Y-%m-%d') }}.
+                     Check out the new 
+                     <a class="navbar-brand" href="{{ url_for('socialize.user_feed') }}">
+                        post {{ user_activity['post_id'] }}
+                     </a>
+                </h1>
+            {% endif %}
+            
+            {% if user_activity['type_of_activity'] == 1 %}
+                <h1> You liked the post {{ user_activity['post_id']}} 
+                     created by {{ user_activity['username'] }} 
+                     on {{ user_activity['created'].strftime('%Y-%m-%d') }} 
+                </h1>
+            {% endif %}
+ 
+            {% if user_activity['type_of_activity'] == 2 %}
+                <h1> You commented on the post {{ user_activity['post_id']}} 
+                     created by {{ user_activity['username'] }} 
+                     on {{ user_activity['created'].strftime('%Y-%m-%d') }} 
+                </h1>
+            {% endif %}
+            
+            {% if user_activity['type_of_activity'] == 3 %}
+                <h1> You shared a post {{ user_activity['post_id']}} 
+                     on {{ user_activity['created'].strftime('%Y-%m-%d') }} 
+                </h1>
+            {% endif %}
+
+            {% if user_activity['type_of_activity'] == 4 %}
+                <h1> You unliked the post {{ user_activity['post_id']}} 
+                     created by {{ user_activity['username'] }} 
+                     on {{ user_activity['created'].strftime('%Y-%m-%d') }} 
+                </h1>
+            {% endif %}
+
+            {% if user_activity['type_of_activity'] == 5 %}
+                <h1> You deleted your post {{ user_activity['post_id']}} 
+                     on {{ user_activity['created'].strftime('%Y-%m-%d') }} 
+                </h1>
+            {% endif %}
+
+        </li>
+    {% endfor %}
+    </ol>
+</div>
+
+{% endblock %}
